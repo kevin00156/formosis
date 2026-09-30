@@ -1,0 +1,35 @@
+% ============================================================
+% thesis-nsysu — 國立中山大學學位論文版面
+%
+% 依據：國立中山大學研究生學位論文格式規範（111.03.15 第171次教務會議通過）
+% 共用版面在 shared/latex/twthesis.sty；這裡只放中山大學與共用設定不同之處。
+% 封面、書名頁與前置頁順序在 skeleton/paper.md；邊界、字型、行距在 paper.md 的 YAML。
+% ============================================================
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{thesisprofile}[2026/09/30 NSYSU thesis profile]
+
+\RequirePackage[
+  chapnum=zh,          % 第一章（附件5 目錄範例）
+  secsep=.,            % 節 1.1（附件5：「第一節或 1.1」，採 1.1）
+  eqnum=section,       % (1-1)：條文未規定，與圖表同採分章編號
+  fignum=section,      % 圖1-1、表2-1：分章連續編號（附件6）
+  caplabelsep=space,   % 圖1-1 組織系統圖（附件6 範例）
+  lofprefix=true,      % 圖次條目：圖 1-1 標題
+  urldate=true,
+]{twthesis}
+
+\newcommand{\ProfileUniversityZh}{國立中山大學}
+
+% === 圖次、表次（第十一、十二點與附件6 的名稱）===
+\renewcommand{\listfigurename}{圖次}
+\renewcommand{\listtablename}{表次}
+
+% === 目錄的章條目印「第一章」（附件5 目錄範例），twthesis 的 chapnum=zh 只印「一」===
+\let\nsysu@l@section\l@section
+\renewcommand*\l@section[2]{%
+  \begingroup
+  \renewcommand*\numberline[1]{第##1章\hspace{1em}}%
+  \nsysu@l@section{#1}{#2}%
+  \endgroup}
+
+\endinput
