@@ -1,17 +1,51 @@
-# 03 — Zotero + Better BibTeX 詳細設定
+# 03 — 文獻管理：DOI 自動補、Zotero 同步、Zotero MCP
 
-本文件詳細說明如何用 Zotero 管理參考文獻，並透過 Better BibTeX 擴充自動匯出 `.bib` 檔案供 Pandoc 編譯使用。
+PaperForge 用 `references.bib` 存放參考文獻，`paper.md` 以 `[@citekey]` 引用。維護這個檔案有三種方式，**由簡到繁、可以逐步升級**：
 
-## 為什麼用 Zotero + Better BibTeX？
+| 方式 | 需要安裝 | 適合 | 你要做的事 |
+|------|----------|------|------------|
+| **A. 只用 DOI** | 無 | 文獻多為英文期刊、會議、arXiv | 貼 DOI 或 arXiv ID，一行指令加入 |
+| **B. Zotero 同步** | Zotero + Better BibTeX | 已有 Zotero 文獻庫、有中文文獻或書籍 | 用瀏覽器一鍵抓文獻，編譯時自動同步 |
+| **C. Claude 操作文獻庫** | B + Zotero MCP | 想讓 Claude 自己找文獻、加入、引用 | 跟 Claude 說「幫我引用 ResNet 那篇」 |
 
-- **Zotero**：免費開源的文獻管理工具，跨平台、瀏覽器擴充可一鍵抓取論文資訊
-- **Better BibTeX**：自動產生穩定的 citation key（如 `vaswani2017attention`）、自動匯出 `.bib` 到指定路徑
-- **比 Mendeley/EndNote 的優勢**：
-  - 完全免費、無容量限制（自架同步）
-  - citation key 規則可自訂
-  - 變更條目時自動更新 .bib，寫作時無感同步
+> 💡 三種方式產生的都是同一個 `references.bib`，隨時可以升級。從 A 換到 B 時，把現有 `references.bib` 匯入 Zotero（`File` → `Import...`）即可。
 
-## Step 1：安裝 Zotero
+## 方式 A：只用 DOI（不需 Zotero）
+
+在論文資料夾外、PaperForge 根目錄執行：
+
+```bash
+# Linux/macOS
+python3 scripts/cite.py add 10.1109/CVPR.2016.90 1706.03762 --md my-thesis/paper.md
+# 或
+make cite ID="10.1109/CVPR.2016.90 1706.03762" INPUT=my-thesis/paper.md
+
+# Windows
+python scripts\cite.py add 10.1109/CVPR.2016.90 1706.03762 --md my-thesis\paper.md
+```
+
+輸出：
+
+```
+  OK   he2016deep ← 10.1109/CVPR.2016.90
+  OK   vaswani2017attention ← 10.48550/arXiv.1706.03762
+  OK   已寫入 my-thesis/references.bib（新增 2 筆）
+he2016deep
+vaswani2017attention
+```
+
+最後兩行就是 citekey，直接在 `paper.md` 寫 `[@he2016deep]` 即可。
+
+- **接受的格式**：DOI（`10.xxxx/...`、`doi:...`、`https://doi.org/...`）、arXiv ID（`1706.03762`、`arXiv:1706.03762v5`、`https://arxiv.org/abs/...`）
+- **citekey 規則**：`第一作者姓 + 年份 + 題目第一個實詞`，全小寫；撞名時自動加 `a`、`b`
+- **去重**：同一 DOI 已存在時不會重複加入，而是印出既有 citekey
+- **限制**：沒有 DOI 的文獻（多數中文期刊、臺灣學位論文、書籍）無法用這個方式取得，請改用方式 B
+
+## 方式 B：Zotero 同步
+
+Zotero 是免費開源的文獻管理工具，搭配 Better BibTeX 擴充可產生穩定的 citekey。PaperForge 會在**每次編譯前**自動從 Zotero 拉最新的 `.bib`，不需要在 Zotero 裡設定匯出。
+
+### Step 1：安裝 Zotero
 
 從官網下載安裝：<https://www.zotero.org/download/>
 
@@ -19,7 +53,7 @@
 
 ![Zotero 主畫面](images/03-01-zotero-main-page.png)
 
-## Step 2：安裝 Better BibTeX
+### Step 2：安裝 Better BibTeX
 
 1. 到 Better BibTeX GitHub 頁面下載最新 .xpi 檔：<https://github.com/retorquere/zotero-better-bibtex/releases>
 
@@ -41,7 +75,7 @@
 
    ![安裝完成](images/03-06-zotero-add-on-installed.png)
 
-## Step 3：設定 Citation Key 命名規則
+### Step 3：設定 Citation Key 命名規則
 
 `Edit` → `Preferences` → `Better BibTeX` → `Citation Keys` 標籤
 
@@ -73,7 +107,7 @@ auth.lower + year
 
 設定完後，**右鍵點選現有文獻** → `Better BibTeX` → `Refresh BibTeX key`，把舊條目套用新規則。
 
-## Step 4：建立論文 Collection
+### Step 4：建立論文 Collection
 
 在 Zotero 主介面：
 
@@ -87,9 +121,9 @@ auth.lower + year
 
 3. 把所有要引用的文獻拖進此 collection（下一步會教如何用瀏覽器擴充快速抓取）
 
-## Step 5：新增第一篇文獻到 Collection
+### Step 5：新增第一篇文獻到 Collection
 
-> ⚠️ **重要**：Better BibTeX **不允許匯出空的 Collection**（會跳警告），所以在設定下一步的自動匯出前，請先確保 Collection 至少有一篇文獻。
+> ⚠️ **重要**：Better BibTeX **不會匯出空的 Collection**，所以請先確保 Collection 至少有一篇文獻，再進行下一步。
 
 最快的方式是使用 Zotero 的瀏覽器擴充（[Zotero Connector](https://www.zotero.org/download/connectors)）：
 
@@ -103,9 +137,36 @@ auth.lower + year
 
 抓取時可在彈出視窗指定目標 Collection；若沒指定則先進 `My Library`，再手動拖進剛建立的 Collection 即可。
 
-## Step 6：設定自動匯出
+### Step 6：在 paper.md 指定 Collection
 
-**這是關鍵步驟**。讓 Better BibTeX 監看你的 collection，每次新增/修改文獻時自動更新 `.bib` 檔。
+打開 `paper.md` 開頭的 YAML，把 `zotero-collection:` 那行取消註解，填入 Step 4 建立的 Collection 名稱：
+
+```yaml
+bibliography: references.bib
+zotero-collection: "我的碩論"
+```
+
+- 子 Collection 用 `/` 分隔，例如 `"碩論/第二章"`
+- 使用群組文獻庫（Group Library）時，另外加一行 `zotero-library: <群組 library ID>`；預設 `1` 是個人文獻庫
+
+設定後：
+
+- **每次編譯前**，`build.sh` / `build.ps1` 會從 Better BibTeX 拉這個 Collection 的最新內容，覆寫 `references.bib`
+- **Zotero 沒開**時只會印一行警告，沿用現有的 `references.bib` 繼續編譯
+- 想不編譯、只同步：`python3 scripts/cite.py sync my-thesis/paper.md`（或 `make cite-sync INPUT=my-thesis/paper.md`）
+
+> ⚠️ 設了 `zotero-collection:` 後，`references.bib` 就歸 Zotero 管：手動修改或用方式 A 加入的條目，下次同步都會被覆蓋。`cite.py add` 偵測到這個設定時會直接拒絕寫入並提醒你。
+
+### Step 7：驗證同步
+
+1. 確認 Zotero 已開啟
+2. 用瀏覽器擴充再抓一篇論文，存進你的 Collection
+3. 在 `paper.md` 中用 `[@citation-key]` 引用它（citekey 可在 Zotero 條目右側資訊欄最上方看到）
+4. 編譯，確認終端機印出「已從 Zotero 同步 N 筆文獻」，且 PDF 中出現引用編號與參考文獻列表
+
+### 替代做法：Keep updated 自動匯出
+
+如果你不想每次編譯時都要開著 Zotero，可以改用 Better BibTeX 的自動匯出：Zotero 在背景把 Collection 寫到 `references.bib`，編譯時完全不需要 Zotero。**使用這個做法時不要設定 `zotero-collection:`**。
 
 1. 右鍵剛建立的 Collection → `Export Collection...`
 
@@ -121,19 +182,15 @@ auth.lower + year
 
 5. 在彈出的儲存對話框中，導航到你的論文資料夾 `my-thesis/`，存檔名為 `references.bib`
 
-![選擇路徑](images/03-14-zotero-export-collection-choose-path.png)
+   ![選擇路徑](images/03-14-zotero-export-collection-choose-path.png)
+
 設定完成後，**每次在 Zotero 中新增/編輯文獻，`references.bib` 會自動更新**，無需手動操作。
 
-> 💡 如果這一步跳出「Cannot export empty collection」或類似警告，代表 Step 5 還沒做完 — 回去先抓一篇文獻進 Collection 再回來匯出。
+> 💡 如果這一步跳出「Cannot export empty collection」或類似警告，代表 Step 5 還沒做完，回去先抓一篇文獻進 Collection 再回來匯出。
 
-## Step 7：驗證自動更新
+## 方式 C：讓 Claude 直接操作文獻庫（Zotero MCP）
 
-確認「新增文獻 → .bib 自動更新」的迴圈確實運作：
-
-1. 在 Zotero 中再新增一筆文獻（例如用瀏覽器擴充抓取另一篇 arXiv 論文），拖進你的 Collection
-2. 開啟 `my-thesis/references.bib`，應該看到新條目已自動加入（可能需要等 1-2 秒）
-3. 在 `paper.md` 中用 `[@citation-key]` 引用該文獻
-4. 編譯 paper.md，確認 PDF 中出現引用編號與參考文獻列表
+<!-- MCP-SECTION -->
 
 ## 進階：路徑包含中文
 
