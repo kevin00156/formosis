@@ -61,7 +61,7 @@ class GitRepoTest(unittest.TestCase):
 
     def release(self, tag, content):
         (self.dev / "profiles").mkdir(exist_ok=True)
-        (self.dev / "profiles" / "template.txt").write_text(content)
+        (self.dev / "profiles" / "template.txt").write_text(content, encoding="utf-8")
         run("git", "add", "-A", cwd=self.dev)
         run("git", "commit", "-q", "-m", tag, cwd=self.dev)
         run("git", "tag", tag, cwd=self.dev)
@@ -91,7 +91,7 @@ class GitRepoTest(unittest.TestCase):
         self.assertEqual(code, 0, out)
         self.assertIn("v0.1.0 → v0.2.0", out)
         self.assertIn("論文格式相關檔案", out)
-        self.assertEqual((self.tool / "profiles" / "template.txt").read_text(), "template-v2")
+        self.assertEqual((self.tool / "profiles" / "template.txt").read_text(encoding="utf-8"), "template-v2")
         self.assertEqual(self.check(now=1_000_000.0 + 86_500), "")  # apply 後不再提醒
         code, out = self.apply()
         self.assertEqual(code, 0)
@@ -105,19 +105,19 @@ class GitRepoTest(unittest.TestCase):
 
     def test_refuses_to_overwrite_local_changes(self):
         self.release("v0.2.0", "template-v2")
-        (self.tool / "profiles" / "template.txt").write_text("my tweak")
+        (self.tool / "profiles" / "template.txt").write_text("my tweak", encoding="utf-8")
         code, out = self.apply()
         self.assertEqual(code, 1)
         self.assertIn("未提交的修改", out)
-        self.assertEqual((self.tool / "profiles" / "template.txt").read_text(), "my tweak")
+        self.assertEqual((self.tool / "profiles" / "template.txt").read_text(encoding="utf-8"), "my tweak")
 
     def test_untracked_thesis_folder_does_not_block(self):
         self.release("v0.2.0", "template-v2")
         (self.tool / "my-thesis").mkdir()
-        (self.tool / "my-thesis" / "paper.md").write_text("論文")
+        (self.tool / "my-thesis" / "paper.md").write_text("論文", encoding="utf-8")
         code, out = self.apply()
         self.assertEqual(code, 0, out)
-        self.assertEqual((self.tool / "my-thesis" / "paper.md").read_text(), "論文")
+        self.assertEqual((self.tool / "my-thesis" / "paper.md").read_text(encoding="utf-8"), "論文")
 
     def test_feature_branch_is_skipped_and_refused(self):
         self.release("v0.2.0", "template-v2")
