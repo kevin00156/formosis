@@ -4,7 +4,7 @@
 SHELL := /bin/bash
 .PHONY: help build clean distclean watch test test-minimal test-full \
         slides slides-html slides-watch test-slides \
-        list-profiles skill install install-marp check-env
+        list-profiles skill install install-marp check-env cite cite-sync
 
 # 預設輸入檔案
 INPUT ?= paper.md
@@ -27,6 +27,10 @@ help:
 	@echo "  make slides-html [SLIDES=...]             編譯 HTML 簡報"
 	@echo "  make slides-watch [SLIDES=...]            監看模式"
 	@echo "  make test-slides                          編譯 slides-minimal 範例"
+	@echo ""
+	@echo "  -- 文獻 --"
+	@echo "  make cite ID=<DOI|arXiv> [INPUT=...]   以 DOI / arXiv ID 加入文獻到 .bib"
+	@echo "  make cite-sync [INPUT=...]            從 Zotero（Better BibTeX）同步 .bib"
 	@echo ""
 	@echo "  -- 工具 --"
 	@echo "  make list-profiles                    列出可用的 profile"
@@ -73,6 +77,13 @@ slides-watch:
 
 test-slides:
 	@./scripts/build-slides.sh examples/slides-minimal/slides.md --pdf
+
+# -- 文獻 --
+cite:
+	@python3 scripts/cite.py add $(ID) --md $(INPUT)
+
+cite-sync:
+	@python3 scripts/cite.py sync $(INPUT)
 
 # -- 工具 --
 list-profiles:

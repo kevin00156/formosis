@@ -395,11 +395,25 @@ function Invoke-Lint {
     }
 }
 
+# --- Zotero 同步 ---
+# 輸入檔 frontmatter 有 zotero-collection: 時，從本機 Better BibTeX 拉最新 .bib（scripts/cite.py sync）。
+# 取代 Zotero GUI 的 Keep updated 自動匯出設定。Zotero 沒開或失敗時僅警告、沿用現有 .bib。
+function Invoke-ZoteroSync {
+    if ($NoBib) { return }
+    $syncer = Join-Path $ScriptDir "cite.py"
+    if (-not (Test-Path $syncer)) { return }
+    $py = Resolve-Python
+    if (-not $py) { return }
+    $code = Invoke-Native -Cmd $py -ArgList @($syncer, "sync", "--quiet", $InputAbs) -ShowOutput
+    if ($code -ne 0) { Write-WarnMsg "Zotero 同步無法執行，沿用現有 .bib" }
+}
+
 function Invoke-Build {
     $tmpdir = Join-Path $env:TEMP "paperforge_$([System.IO.Path]::GetRandomFileName())"
     New-Item -ItemType Directory -Path $tmpdir -Force | Out-Null
 
     try {
+        Invoke-ZoteroSync
         Invoke-Lint
 
         Write-Info "暫存目錄：$tmpdir"
