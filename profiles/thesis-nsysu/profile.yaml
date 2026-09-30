@@ -1,0 +1,31 @@
+name: thesis-nsysu
+type: thesis
+style: nsysu
+description: 國立中山大學（National Sun Yat-sen University）學位論文格式。
+# 格式來源：規範的出處與可信度，新增或修改 profile 時務必填寫。
+# status: verified = 已對照校方正式規範；derived = 依實際論文／系所範本推得，未對照校方條文
+source:
+  status: verified
+  basis: >-
+    國立中山大學研究生學位論文格式規範（99.12.13 第126次、104.03.19 第143次、
+    111.03.15 第171次教務會議通過；法規系統 2026-03-06 重新上傳中文版與中英對照版，
+    內容仍為 111.03.15 版）；圖資處論文封面格式範例檔
+  url: https://regs.nsysu.edu.tw/rule/file/202603061451120075.pdf
+  version: "111.03.15"
+  note: >-
+    紙張、邊界、頁碼位置與格式、前置頁順序、章節與圖表分章編號（圖1-1、表1-1）、
+    封面欄位與字級依條文。條文中文字型寫「12 號楷書（細明體及標楷體為主）」，本 profile
+    採標楷體。條文中文 1.5 倍、英文 2 倍行高，LaTeX 無法同段依文字切換，skeleton 用
+    1.5，以英文撰寫的論文請改 linestretch: 2。節可用「第一節」或「1.1」，本 profile 採 1.1。
+    條文未規定的項目採慣例值：公式分章編號 (1-1)、章節標題字級、圖表標題位置
+    （圖名在圖下、表名在表上）。電子檔封面不需書脊與公開授權書；書脊（學年度）由印刷
+    廠排版。封面顏色由各學院自訂。浮水印自 110/6/21 起由圖資處系統自動加入，勿自行加。
+    各系所得另訂格式，以系所規定為準。
+language: zh-TW
+template: ../../shared/latex/thesis.latex   # 共用模板；學校差異在 thesisprofile.sty
+skeleton: skeleton/
+skill: skill/SKILL.md
+defaults:
+  bib-style: ieee
+  pdf-engine: xelatex
+  csl: shared/cites/ieee.csl
