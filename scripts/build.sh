@@ -347,8 +347,20 @@ do_lint() {
     fi
 }
 
+# --- Zotero 同步 ---
+# 輸入檔 frontmatter 有 zotero-collection: 時，從本機 Better BibTeX 拉最新 .bib（scripts/cite.py sync）。
+# 取代 Zotero GUI 的「Keep updated」自動匯出設定。Zotero 沒開或失敗時僅警告、沿用現有 .bib。
+do_zotero_sync() {
+    [[ "$NO_BIB" == "true" ]] && return 0
+    local syncer="${SCRIPT_DIR}/cite.py"
+    [[ -f "$syncer" ]] || return 0
+    command -v python3 &> /dev/null || return 0
+    python3 "$syncer" sync --quiet "$INPUT_ABS" || log_warn "Zotero 同步無法執行，沿用現有 .bib"
+}
+
 # --- 核心編譯函式 ---
 do_build() {
+    do_zotero_sync
     do_lint
 
     local tmpdir

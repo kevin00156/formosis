@@ -23,3 +23,7 @@ jobs:
       # 只有 error 級會讓 CI 失敗；warn 級（死引用）留給互動式 build / 本機顯示。
       - name: Run PaperForge lint (scripts/lint.py)
         run: python3 scripts/lint.py --ci
+
+      # scripts/ 下 Python 工具的單元測試（標準函式庫 unittest，不需安裝套件、不連網）
+      - name: Run script unit tests
+        run: python3 -m unittest discover -s tests -v

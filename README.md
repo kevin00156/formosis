@@ -34,7 +34,7 @@ PaperForge並沒有新寫任何的新工具，僅提供一個框架，整合所�
 | 痛點 | PaperForge 解法 |
 |------|----------|
 | Word 排版難掌控、追修不同步 | Markdown 純文字 + Git 版本控制 |
-| 引用格式手動維護易出錯 | Zotero 自動匯出 BibTeX |
+| 引用格式手動維護易出錯 | 貼 DOI 自動補 BibTeX；Zotero 編譯前自動同步；Claude 可經 Zotero MCP 直接查找、新增文獻 |
 | 章節編號、圖表編號改一個動全身 | LaTeX 自動編號 + 跨章節 `\ref{}` |
 | 不熟學校／期刊規範細節 | profile 內建 Claude Skill 熟悉規範 |
 | 同學／同事間 Word 檔互傳衝突 | GitHub 協作 |
@@ -230,7 +230,7 @@ python scripts/check-fonts.py --verbose
 
 - [📚 安裝教學（含疑難排解）](docs/01-installation.md)
 - [✍️ 寫作流程指南](docs/02-writing-workflow.md)
-- [📖 Zotero + Better BibTeX 設定](docs/03-zotero-setup.md)
+- [📖 文獻管理：DOI 自動補、Zotero 同步、Zotero MCP](docs/03-zotero-setup.md)
 - [📝 Pandoc 語法速查](docs/04-pandoc-syntax.md)
 - [🛠 疑難排解](docs/05-troubleshooting.md)
 - [🎨 客製化（封面、字體、模板）](docs/06-customization.md)

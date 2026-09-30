@@ -46,6 +46,7 @@ linestretch: 1.5
 # === 引用/參考文獻（biblatex + biber） ===
 # ============================================================
 bibliography: references.bib
+# zotero-collection: "我的論文"   # 取消註解 = 由 Zotero 管理 .bib，編譯前自動從 Better BibTeX 同步
 biblatex: true
 biblio-style: ieee
 suppress-bibliography: true

@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- 文獻自動化 `scripts/cite.py`（只用 Python 標準函式庫）：
+  - `cite.py add <DOI|arXiv ID>`：經 doi.org content negotiation 取得 BibTeX，產生 `作者年份題目` 格式 citekey、以 DOI 去重後寫入 `.bib`；不需安裝 Zotero。`make cite ID=... INPUT=...`
+  - `cite.py sync paper.md`：YAML 有 `zotero-collection:` 時從本機 Better BibTeX 拉最新 `.bib`，取代 GUI 的 Keep updated 設定。`build.sh` / `build.ps1` 編譯前自動執行，Zotero 沒開時僅警告。
+- 論文／報告 skeleton 的 `CLAUDE.md` 新增「文獻管理」規則：優先透過 Zotero MCP 查找與新增文獻，禁止捏造 BibTeX。
+- `tests/test_cite.py` 單元測試，並在 `lint.yml` 執行。
+
 ### Changed
 - **Breaking**：根目錄的 `build.ps1`、`build.sh`、`build-slides.ps1`、`build-slides.sh` 全部搬入 `scripts/`。呼叫方式從 `./build.sh paper.md` 改為 `./scripts/build.sh paper.md`（Windows 同理：`.\scripts\build.ps1`）。Makefile、CI、安裝腳本、profile skeleton 的 Makefile/CLAUDE.md 都已同步更新。
 - **Rebranded**：專案改名為 **PaperForge**。原 `ncu_paper_writer` 是工具最初為 NCU 學位論文設計的暫用名；現在定位為跨學校／期刊／機關的「文件鍛造」框架，每個 profile（如 `thesis-ncu`）保留各自的命名與規範識別。Python 套件名 `ncu-paper-writer` → `paperforge`；GitHub repo 與 URL 預期改為 `kevin00156/paperforge`。框架名不滲透 profile 內容：`ncu-paper-writer` skill 與 `profiles/thesis-ncu/` 維持原名。
