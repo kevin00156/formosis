@@ -1,0 +1,88 @@
+% ============================================================
+% thesis-ntust — 國立臺灣科技大學學位論文版面
+%
+% 依據：國立臺灣科技大學學位論文撰寫、編排規則及注意事項（113.12.24 第218次教務會議通過）
+% 共用版面在 shared/latex/twthesis.sty；這裡只放臺科大與共用設定不同之處。
+% 封面、書名頁與前置頁順序在 skeleton/paper.md；邊界、字型、行距在 paper.md 的 YAML。
+% ============================================================
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{thesisprofile}[2026/09/30 NTUST thesis profile]
+
+\RequirePackage[
+  chapnum=zh,          % 第一章（附錄七 目錄範例）
+  eqnum=section,       % (1-1)：條文未規定，與圖表同採分章編號
+  fignum=section,      % 圖1-1、圖2-3：依章編號（四(八)4(1)）
+  caplabelsep=space,   % 圖1-1 標題
+  lofprefix=true,      % 圖目錄條目：圖 1-1 標題
+  urldate=true,
+]{twthesis}
+
+\newcommand{\ProfileUniversityZh}{國立臺灣科技大學}
+
+% ============================================================
+% 章節編號階層（四(八)1）：第一章、一、(一)、1.、(1)
+% twthesis 的節以下固定為阿拉伯數字 1.1，這裡整組覆寫。
+% \zhnum{counter} 可展開，寫進 .toc / .aux 時就定值，目錄與 \ref 才不會變成「零」。
+% \ref 只回傳編號本身（「一」「3」），不含「、」與括號。
+% ============================================================
+\renewcommand{\thesubsection}{\zhnum{subsection}}
+\renewcommand{\thesubsubsection}{\zhnum{subsubsection}}
+\renewcommand{\theparagraph}{\arabic{paragraph}}
+\renewcommand{\thesubparagraph}{\arabic{subparagraph}}
+
+% ============================================================
+% 標題字級（二(二)、四(八)2）
+%   章標題與摘要、目錄等前置頁標題：20pt 加粗、置中，下方空兩行
+%   小節等標題：18pt（「一、」「(一)」兩層）；「1.」「(1)」兩層用內文字級加粗
+%   小節標題靠左，各層次內縮以示區別（四(八)1）
+% ============================================================
+\titleformat{\section}
+  {\centering\fontsize{20pt}{30pt}\selectfont\bfseries}
+  {第\thesection 章}{1em}{}
+\titlespacing*{\section}{0pt}{0pt}{2\baselineskip}
+
+\titleformat{\subsection}
+  {\fontsize{18pt}{27pt}\selectfont\bfseries}
+  {\thesubsection、}{0pt}{}
+\titlespacing*{\subsection}{0pt}{18pt}{6pt}
+
+\titleformat{\subsubsection}
+  {\fontsize{18pt}{27pt}\selectfont\bfseries}
+  {(\thesubsubsection)}{0.5em}{}
+\titlespacing*{\subsubsection}{1em}{12pt}{6pt}
+
+\titleformat{\paragraph}
+  {\normalsize\bfseries}
+  {\theparagraph.}{0.5em}{}
+\titlespacing*{\paragraph}{2em}{12pt}{6pt}
+
+\titleformat{\subparagraph}
+  {\normalsize\bfseries}
+  {(\thesubparagraph)}{0.5em}{}
+\titlespacing*{\subparagraph}{3em}{12pt}{6pt}
+
+% ============================================================
+% 目錄條目與內文標題一致（附錄七）：第一章、一、(一)
+% ============================================================
+\let\ntust@l@section\l@section
+\renewcommand*\l@section[2]{%
+  \begingroup
+  \renewcommand*\numberline[1]{第##1章\hspace{1em}}%
+  \ntust@l@section{#1}{#2}%
+  \endgroup}
+\let\ntust@l@subsection\l@subsection
+\renewcommand*\l@subsection[2]{%
+  \begingroup
+  \let\ntust@numberline\numberline
+  \renewcommand*\numberline[1]{\ntust@numberline{##1、}}%
+  \ntust@l@subsection{#1}{#2}%
+  \endgroup}
+\let\ntust@l@subsubsection\l@subsubsection
+\renewcommand*\l@subsubsection[2]{%
+  \begingroup
+  \let\ntust@numberline\numberline
+  \renewcommand*\numberline[1]{\ntust@numberline{(##1)}}%
+  \ntust@l@subsubsection{#1}{#2}%
+  \endgroup}
+
+\endinput
