@@ -1,0 +1,35 @@
+name: thesis-nchu
+type: thesis
+style: nchu
+description: 國立中興大學（National Chung Hsing University）學位論文格式。
+# 格式來源：規範的出處與可信度，新增或修改 profile 時務必填寫。
+# status: verified = 已對照校方正式規範；derived = 依實際論文／系所範本推得，未對照校方條文
+source:
+  status: verified
+  basis: >-
+    國立中興大學學位論文格式規範（教務處表單 F2-65，111.4.21 第 83 次教務會議通過）；
+    圖書館電子學位論文服務系統上傳說明與 QA
+  url: https://oaa.nchu.edu.tw/zh-tw/form/download-list.4.30.
+  version: "111.4.21"
+  note: >-
+    A4、上下左右邊界 3 cm、頁尾置中頁碼、摘要起小寫羅馬／第一章起阿拉伯、表題在上圖題在下、
+    圖表全文連續編號、表目次在圖目次之前、封面標楷體 20 點與中式數字日期，皆依 F2-65。
+    書名頁、審核頁、授權頁、誌謝不編頁碼依圖書館 QA。
+    條文未規定而採慣例值：字型（條文「由各院所自行規定」，採封面規定的標楷體／Times New Roman
+    12pt）、章 16pt（圖書館 Word 範本 Heading 1）與節 14pt、公式全文連續 (1)、頁碼距紙緣 1.75 cm（Word 範本）。
+    行距：條文「中文間隔一行，每頁最少 32 行」。版心高 29.7−6 = 23.7 cm ≈ 672pt，
+    真正雙倍行距（12pt 字約 29pt 行高）每頁僅約 23 行，與 32 行矛盾；本 profile 以可驗證的
+    「每頁至少 32 行」為準，linestretch 1.4（12pt 基準行高 14.5pt × 1.4 ≈ 20.3pt，
+    (672 − 12) / 20.3 + 1 ≈ 33 行），英文「1.5 行、每頁至少 28 行」亦滿足。
+    章節編號：條文允許「一、」或「1.」兩式擇一，本 profile 預設章「一、」節 1.1，
+    西式 1.／1.1.／1.1.1. 可在 thesisprofile.sty 切換。
+    浮水印由圖書館系統加入，學生勿自行加（也勿設 PDF 保全）；系所有特殊格式要求時須在上傳
+    基本資料「附註」欄說明。
+language: zh-TW
+template: ../../shared/latex/thesis.latex   # 共用模板；學校差異在 thesisprofile.sty
+skeleton: skeleton/
+skill: skill/SKILL.md
+defaults:
+  bib-style: ieee
+  pdf-engine: xelatex
+  csl: shared/cites/ieee.csl
