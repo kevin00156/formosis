@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- 學位論文 profile 改用共用模板：`shared/latex/thesis.latex`（Pandoc 模板）+ `shared/latex/twthesis.sty`（共用版面，選項 `chapnum` / `eqnum` / `caplabelsep` / `lofprefix` / `urldate`）。各校 `template.latex` 改為約 20 行的 `thesisprofile.sty`；`profile.yaml` 的 `template:` 欄位現在會被 build script 讀取。重構前後 thesis-ncu、thesis-ccu skeleton 與 examples 的 PDF 逐像素一致。
+- thesis-ccu 補上 thesis-ncu 已有的 `\mathindent` 安全網（原本只修在 NCU 複本）。
+
 ### Added
 - 文獻自動化 `scripts/cite.py`（只用 Python 標準函式庫）：
   - `cite.py add <DOI|arXiv ID>`：經 doi.org content negotiation 取得 BibTeX，產生 `作者年份題目` 格式 citekey、以 DOI 去重後寫入 `.bib`；不需安裝 Zotero。`make cite ID=... INPUT=...`

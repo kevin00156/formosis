@@ -3,7 +3,7 @@ type: thesis
 style: ccu
 description: 國立中正大學（National Chung Cheng University）學位論文格式。
 language: zh-TW
-template: template.latex
+template: ../../shared/latex/thesis.latex   # 共用模板；學校差異在 thesisprofile.sty
 skeleton: skeleton/
 skill: skill/SKILL.md
 defaults:

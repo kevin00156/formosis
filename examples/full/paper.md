@@ -44,7 +44,7 @@ secnumdepth: 4
 toc: false
 
 # 章節格式、圖表標題、頁碼、超連結、longtable/multirow/fp 等套件皆由
-# profile thesis-ncu 的 template.latex 提供，不需在此重抄。
+# profile thesis-ncu 的 thesisprofile.sty（與共用的 twthesis.sty）提供，不需在此重抄。
 # 此處僅保留本範例專屬的實驗數據變數（內文以 \experimentAccuracy 等引用）。
 header-includes:
   - |

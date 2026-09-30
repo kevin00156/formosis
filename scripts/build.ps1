@@ -288,8 +288,21 @@ if (-not (Test-Path $ProfileDir)) {
     Write-ErrorMsg "找不到 profile：$ProfileName（預期目錄：$ProfileDir）"
     exit 1
 }
+# profile.yaml 的 template: 欄位（相對於 profile 目錄），未寫則為 template.latex。
+# 論文類 profile 指向共用的 shared\latex\thesis.latex，學校差異在 thesisprofile.sty。
 if (-not $Template) {
-    $Template = Join-Path $ProfileDir "template.latex"
+    $profileTemplate = "template.latex"
+    $profileYaml = Join-Path $ProfileDir "profile.yaml"
+    if (Test-Path $profileYaml) {
+        foreach ($line in Get-Content -LiteralPath $profileYaml -Encoding UTF8) {
+            if ($line -match '^template\s*:\s*(.*)$') {
+                $v = ($Matches[1] -replace '\s+#.*$', '').Trim() -replace '^[''"]|[''"]$', ''
+                if ($v) { $profileTemplate = $v }
+                break
+            }
+        }
+    }
+    $Template = [System.IO.Path]::GetFullPath((Join-Path $ProfileDir $profileTemplate))
 }
 $CslPath = Join-Path $RepoRoot "shared\cites\ieee.csl"
 
@@ -424,6 +437,15 @@ function Invoke-Build {
 
         # 複製模板到暫存（內部統一命名為 template.latex）
         Copy-Item -Path $Template -Destination (Join-Path $tmpdir "template.latex") -Force
+
+        # 模板用到的 LaTeX 套件：共用 shared\latex\*.sty，再由 profile 目錄的 *.sty 覆蓋同名檔
+        foreach ($styDir in @((Join-Path $RepoRoot "shared\latex"), $ProfileDir)) {
+            if (Test-Path $styDir) {
+                Get-ChildItem -Path $styDir -Filter "*.sty" -File | ForEach-Object {
+                    Copy-Item -Path $_.FullName -Destination $tmpdir -Force
+                }
+            }
+        }
 
         # 複製 CSL（若需要）
         $tmpCslDir = Join-Path $tmpdir "cites"

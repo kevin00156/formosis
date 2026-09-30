@@ -29,8 +29,9 @@ $for(classoption)$
 $endfor$
 ]{$documentclass$}
 
-% === NCU thesis cover metadata macros (from YAML) ===
-\newcommand{\UniversityZh}{$if(university-zh)$$university-zh$$else$國立中央大學$endif$}
+% === 封面 metadata 巨集（來自 paper.md YAML；校名預設值由 profile 的 thesisprofile.sty 提供）===
+\newcommand{\UniversityZh}{$if(university-zh)$$university-zh$$else$\ProfileUniversityZh$endif$}
+\newcommand{\College}{$if(college)$$college$$endif$}
 \newcommand{\ThesisTitleZh}{$if(thesis-title-zh)$$thesis-title-zh$$endif$}
 \newcommand{\ThesisTitleEn}{$if(thesis-title-en)$$thesis-title-en$$endif$}
 \newcommand{\Department}{$if(department)$$department$$endif$}
@@ -40,25 +41,7 @@ $endfor$
 \newcommand{\AdvisorName}{$if(advisor)$$advisor$$endif$}
 \newcommand{\ROCYear}{$if(year)$$year$$endif$}
 \newcommand{\ROCMonth}{$if(month)$$month$$endif$}
-
-% === Cover letterspacing helper (XeLaTeX/fontspec) ===
-% Usage: \Spaced[0.5em]{國立中央大學}
-% Note: fontspec's LetterSpace does not apply to xeCJK CJK fonts reliably.
-% This macro inserts a fixed kern between each character/token, so it works for Chinese cover text.
-\newcommand{\Spaced}[2][0.5em]{%
-  \begingroup
-  \def\NCUSpacedKern{#1}%
-  \expandafter\NCUSpacedDo\expanded{#2}\relax
-  \endgroup
-}
-\def\NCUSpacedDo#1#2\relax{%
-  #1%
-  \ifx\relax#2\relax
-  \else
-    \kern\NCUSpacedKern
-    \NCUSpacedDo#2\relax
-  \fi
-}
+\newcommand{\ROCDay}{$if(day)$$day$$endif$}
 $if(beamer)$
 $if(background-image)$
 \usebackgroundtemplate{%
@@ -475,121 +458,12 @@ $endfor$
 \def\languageshorthands#1{}
 $endif$
 % ============================================================
-% === NCU 論文 profile 預設 LaTeX 設定 ===
-% 這些設定原本被複製在每份 skeleton/paper.md 的 header-includes 區塊；
-% 收進 template 後，使用者複製 skeleton 不需再帶這坨 LaTeX，
-% profile 升級後既有論文也會自動跟進。
+% === 學校 profile 版面設定 ===
+% thesisprofile.sty 位於 profiles/<profile>/，會以選項載入共用的 shared/latex/twthesis.sty。
+% 兩者由 build.sh / build.ps1 複製到編譯暫存目錄。
 % 使用者 YAML 中的 header-includes 會在這之後 append，可 override 此處任何一條。
 % ============================================================
-\usepackage{titlesec}
-\usepackage{makecell}
-\usepackage{indentfirst}
-\usepackage{fancyhdr}
-\usepackage{graphicx}
-\usepackage{caption}
-\usepackage{hyperref}
-\usepackage{xcolor}
-\usepackage{float}
-\usepackage{longtable}
-\usepackage{colortbl}
-
-% === 圖表位置:偏好原位,允許少量浮動 ===
-\floatplacement{figure}{!htbp}
-\floatplacement{table}{!htbp}
-
-% === 公式:靠左 + 自動編號 (節號-公式號) ===
-% \mathindent 只有在 documentclass 帶 fleqn 時才存在;未帶 fleqn 的文件
-% 直接 \setlength 會碰到未定義長度,導致封面前漏出 "0pt" 且多出一張空白頁。
-% 先補定義當安全網(無 fleqn 時公式維持置中,但不會編譯出錯)。
-\ifdefined\mathindent\else\newlength{\mathindent}\fi
-\setlength{\mathindent}{0pt}
-\numberwithin{equation}{section}
-\renewcommand{\theequation}{\arabic{section}-\arabic{equation}}
-
-% === 超連結設定 ===
-\hypersetup{
-  colorlinks=true,
-  linkcolor=black,
-  citecolor=blue,
-  urlcolor=blue
-}
-
-% === 首行縮排 2 字元 ===
-\setlength{\parindent}{2em}
-
-% === 圖表標題置中,名稱中文化 ===
-\captionsetup{justification=centering}
-\captionsetup[figure]{name={圖},labelsep=space}
-\captionsetup[table]{name={表},labelsep=space}
-
-% === 目錄/圖目錄/表目錄標題 ===
-\renewcommand{\contentsname}{目錄}
-\renewcommand{\listfigurename}{圖目錄}
-\renewcommand{\listtablename}{表目錄}
-
-% === 圖目錄/表目錄條目:編號前補「圖 」「表 」,與內文標號一致 ===
-\makeatletter
-\renewcommand*\l@figure[2]{%
-  \begingroup
-  \renewcommand*\numberline[1]{\hb@xt@\@tempdima{圖 ##1\hfil}}%
-  \@dottedtocline{1}{0em}{3.5em}{#1}{#2}%
-  \endgroup
-}
-\renewcommand*\l@table[2]{%
-  \begingroup
-  \renewcommand*\numberline[1]{\hb@xt@\@tempdima{表 ##1\hfil}}%
-  \@dottedtocline{1}{0em}{3.5em}{#1}{#2}%
-  \endgroup
-}
-\makeatother
-
-% === 章標題格式:置中、加粗、加上「第 X 章」前綴 ===
-\titleformat{\section}
-  {\centering\Large\bfseries}
-  {第\arabic{section}章}{1em}{}
-\titlespacing*{\section}{0pt}{0pt}{24pt}
-
-% === 節標題格式 ===
-\titleformat{\subsection}
-  {\large\bfseries}
-  {\arabic{section}.\arabic{subsection}}{1em}{}
-\titlespacing*{\subsection}{0pt}{18pt}{6pt}
-
-% === 小節標題格式 ===
-\titleformat{\subsubsection}
-  {\normalsize\bfseries}
-  {\arabic{section}.\arabic{subsection}.\arabic{subsubsection}}{1em}{}
-\titlespacing*{\subsubsection}{0pt}{12pt}{6pt}
-
-% === 第四層標題格式 ===
-\titleformat{\paragraph}
-  {\normalsize\bfseries}
-  {\arabic{section}.\arabic{subsection}.\arabic{subsubsection}.\arabic{paragraph}}{1em}{}
-\titlespacing*{\paragraph}{0pt}{12pt}{6pt}
-
-% === 頁碼樣式 ===
-\fancypagestyle{frontmatter}{
-  \fancyhf{}
-  \fancyfoot[C]{\thepage}
-  \renewcommand{\headrulewidth}{0pt}
-}
-\fancypagestyle{mainmatter}{
-  \fancyhf{}
-  \fancyfoot[C]{\thepage}
-  \renewcommand{\headrulewidth}{0pt}
-}
-
-% === 左右對齊 ===
-\usepackage{ragged2e}
-\justifying
-\setlength{\emergencystretch}{3em}
-
-% === 技術識別符允許在底線處換行;math mode 內保留原行為,避免 \mathit{a\_b} 之類爆掉 ===
-\let\paperforgeOrigUnderscore\_
-\renewcommand{\_}{\ifmmode\paperforgeOrigUnderscore\else\textunderscore\allowbreak\fi}
-
-% === 實驗數據變數套件(在 paper.md 用 \def\xxx{値} + \FPeval 集中管理數字) ===
-\usepackage{fp}
+\usepackage{thesisprofile}
 
 % === 使用者 YAML header-includes(可 override 上方任何一條) ===
 $for(header-includes)$
@@ -613,11 +487,6 @@ $if(natbib)$
 $endif$
 $if(biblatex)$
 \usepackage[$if(biblio-style)$style=$biblio-style$,$endif$$for(biblatexoptions)$$biblatexoptions$$sep$,$endfor$]{biblatex}
-% 不印瀏覽日期（biblatex 預設對 @online 等條目的 urldate 會輸出「visited on MM/DD/YYYY」）。
-% NCU 口試委員回饋此欄位多餘，故在 biber 資料層直接 null 掉 urldate。
-% 用 sourcemap 而非 \clearfield{urldate}：後者清不到拆解後的 urlyear/urlmonth/urlday
-% 元件（ieee 樣式實測無效），sourcemap 與 style 無關，治本。
-\DeclareSourcemap{\maps[datatype=bibtex]{\map{\step[fieldset=urldate, null]}}}
 $for(bibliography)$
 \addbibresource{$bibliography$}
 $endfor$

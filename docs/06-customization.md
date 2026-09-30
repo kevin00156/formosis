@@ -177,22 +177,22 @@ geometry: "top=3cm, bottom=2.5cm, left=3.5cm, right=2cm"
 
 ## 修改 LaTeX 模板
 
-最深的客製化是直接編輯 `profiles/thesis-ncu/template.latex`。但**強烈建議**先嘗試在 `paper.md` YAML `header-includes` 中覆寫設定，避免直接改模板。
+學位論文的版面分三層：`shared/latex/thesis.latex`（Pandoc 模板，各校共用）→ `shared/latex/twthesis.sty`（共用版面）→ `profiles/<profile>/thesisprofile.sty`（學校差異）。**強烈建議**先在 `paper.md` YAML `header-includes` 中覆寫設定，它在三層之後載入，可以覆寫任何一條，又不影響別人。
 
-如果一定要改：
+如果一定要改模板：
 
-1. 複製一份模板：`cp profiles/thesis-ncu/template.latex profiles/thesis-ncu/my-custom.latex`
+1. 複製一份模板：`cp shared/latex/thesis.latex my-custom.latex`
 2. 編輯 my-custom.latex
 3. 編譯時指定：
    ```bash
-   ./scripts/build.sh paper.md --template profiles/thesis-ncu/my-custom.latex
+   ./scripts/build.sh paper.md --template my-custom.latex
    ```
 
 或者複製整個 profile 自成一套：
 
 ```bash
 cp -r profiles/thesis-ncu profiles/thesis-myschool
-# 編輯 profiles/thesis-myschool/{template.latex, skeleton/, skill/SKILL.md, profile.yaml}
+# 編輯 profiles/thesis-myschool/{thesisprofile.sty, skeleton/, skill/SKILL.md, profile.yaml}
 ./scripts/build.sh paper.md --profile thesis-myschool
 ```
 
@@ -227,7 +227,7 @@ program: "光機電工程碩士學位學程"
 
 1. `cp -r profiles/thesis-ncu profiles/thesis-myschool`
 2. 修改 `profiles/thesis-myschool/profile.yaml` 的 name、style、description
-3. 修改 `profiles/thesis-myschool/template.latex` 的封面 macro 預設值（`\UniversityZh` 等）
+3. 修改 `profiles/thesis-myschool/thesisprofile.sty`：校名 `\ProfileUniversityZh` 與 `twthesis` 選項（章號、公式編號、圖表標題等，見 `profiles/README.md`）
 4. 修改 `profiles/thesis-myschool/skeleton/paper.md` 的封面 raw LaTeX 區塊（`\Spaced` 字距、字級、版面）；別忘了把開頭 `profile:` 欄位也改成 `thesis-myschool`，使用者複製 skeleton 後不必帶 `--profile` 旗標就能編譯
 5. 修改 `profiles/thesis-myschool/skill/SKILL.md` 中的字型/格式規範
 6. 確認 `skeleton/` **開箱即可編譯**：若 `skeleton/paper.md` 有 `\includegraphics` / `![](images/...)`，就要在 `skeleton/images/` 放一張同名佔位圖（使用者 `cp -r` 後第一次編譯不該因缺圖失敗，CI 也會實際編譯這份 skeleton）

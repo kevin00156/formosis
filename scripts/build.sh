@@ -260,8 +260,12 @@ if [[ ! -d "$PROFILE_DIR" ]]; then
     log_error "找不到 profile：$PROFILE（預期目錄：$PROFILE_DIR）"
     exit 1
 fi
+# profile.yaml 的 template: 欄位（相對於 profile 目錄），未寫則為 template.latex。
+# 論文類 profile 指向共用的 shared/latex/thesis.latex，學校差異在 thesisprofile.sty。
 if [[ -z "$TEMPLATE" ]]; then
-    TEMPLATE="${PROFILE_DIR}/template.latex"
+    profile_template="$(awk '/^template[[:space:]]*:/ { v=$0; sub(/^template[[:space:]]*:[[:space:]]*/,"",v);
+        sub(/[[:space:]]+#.*$/,"",v); gsub(/^["\047]|["\047]$/,"",v); print v; exit }' "${PROFILE_DIR}/profile.yaml" 2>/dev/null)"
+    TEMPLATE="${PROFILE_DIR}/${profile_template:-template.latex}"
 fi
 CSL_PATH="${REPO_ROOT}/shared/cites/ieee.csl"
 
@@ -375,6 +379,12 @@ do_build() {
 
     # 複製模板到暫存（內部統一命名為 template.latex）
     cp "$TEMPLATE" "$tmpdir/template.latex"
+
+    # 模板用到的 LaTeX 套件：共用 shared/latex/*.sty，再由 profile 目錄的 *.sty 覆蓋同名檔
+    local sty
+    for sty in "${REPO_ROOT}"/shared/latex/*.sty "${PROFILE_DIR}"/*.sty; do
+        [[ -f "$sty" ]] && cp "$sty" "$tmpdir/"
+    done
 
     if [[ -f "$CSL_PATH" ]] && [[ ! -f "$tmpdir/cites/ieee.csl" ]]; then
         mkdir -p "$tmpdir/cites"

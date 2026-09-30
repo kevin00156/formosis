@@ -1,0 +1,198 @@
+% ============================================================
+% twthesis.sty — 臺灣學位論文共用版面設定
+%
+% 各校 profile 共用的部分集中在這裡，修 bug 改一次、所有學校一起受惠。
+% 學校之間「有限的枚舉差異」用選項表達；封面、書名頁、前置頁順序等
+% 結構性差異不放這裡，留在各 profile 的 skeleton 與 thesisprofile.sty。
+%
+% 由 profiles/<profile>/thesisprofile.sty 以 \RequirePackage[...]{twthesis} 載入：
+%   chapnum     = arabic | zh           章號：第1章 / 第一章
+%   eqnum       = section | continuous  公式編號：(1-1) / (1)
+%   caplabelsep = space | period        圖表標題：圖1 標題 / 圖1. 標題
+%   lofprefix   = true | false          圖目錄/表目錄條目前補「圖 」「表 」
+%   urldate     = true | false          false：參考文獻不印瀏覽日期（visited on）
+% ============================================================
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{twthesis}[2026/09/30 Taiwan thesis common layout]
+
+\RequirePackage{kvoptions}
+\RequirePackage{etoolbox}
+\SetupKeyvalOptions{family=twthesis,prefix=twthesis@}
+\DeclareStringOption[arabic]{chapnum}
+\DeclareStringOption[section]{eqnum}
+\DeclareStringOption[space]{caplabelsep}
+\DeclareBoolOption[true]{lofprefix}
+\DeclareBoolOption[true]{urldate}
+\ProcessKeyvalOptions*
+
+\def\twthesis@check#1#2#3{%
+  \def\twthesis@tmp{#2}%
+  \@for\twthesis@opt:=#3\do{\ifx\twthesis@opt\twthesis@tmp\let\twthesis@tmp\relax\fi}%
+  \ifx\twthesis@tmp\relax\else
+    \PackageError{twthesis}{Invalid value `#2' for option #1 (allowed: #3)}{}%
+  \fi}
+\twthesis@check{chapnum}{\twthesis@chapnum}{arabic,zh}
+\twthesis@check{eqnum}{\twthesis@eqnum}{section,continuous}
+\twthesis@check{caplabelsep}{\twthesis@caplabelsep}{space,period}
+
+\def\twthesis@zh{zh}
+\def\twthesis@section{section}
+
+% === 封面字距 ===
+% Usage: \Spaced[0.5em]{國立中央大學}
+% fontspec 的 LetterSpace 對 xeCJK 的中文字型不可靠；這裡在每個字元/記號之間插固定 kern。
+\newcommand{\Spaced}[2][0.5em]{%
+  \begingroup
+  \def\twthesis@SpacedKern{#1}%
+  \expandafter\twthesis@SpacedDo\expanded{#2}\relax
+  \endgroup
+}
+\def\twthesis@SpacedDo#1#2\relax{%
+  #1%
+  \ifx\relax#2\relax
+  \else
+    \kern\twthesis@SpacedKern
+    \twthesis@SpacedDo#2\relax
+  \fi
+}
+
+\RequirePackage{titlesec}
+\RequirePackage{makecell}
+\RequirePackage{indentfirst}
+\RequirePackage{fancyhdr}
+\RequirePackage{graphicx}
+\RequirePackage{caption}
+\RequirePackage{hyperref}
+\RequirePackage{xcolor}
+\RequirePackage{float}
+\RequirePackage{longtable}
+\RequirePackage{colortbl}
+\ifx\twthesis@chapnum\twthesis@zh
+  \RequirePackage{zhnumber}
+\fi
+
+% === 圖表位置:偏好原位,允許少量浮動 ===
+\floatplacement{figure}{!htbp}
+\floatplacement{table}{!htbp}
+
+% === 公式:靠左 ===
+% \mathindent 只有在 documentclass 帶 fleqn 時才存在;未帶 fleqn 的文件
+% 直接 \setlength 會碰到未定義長度,導致封面前漏出 "0pt" 且多出一張空白頁。
+% 先補定義當安全網(無 fleqn 時公式維持置中,但不會編譯出錯)。
+\ifdefined\mathindent\else\newlength{\mathindent}\fi
+\setlength{\mathindent}{0pt}
+% === 公式編號:節號-公式號 (1-1),或全文連續 (1) ===
+\ifx\twthesis@eqnum\twthesis@section
+  \numberwithin{equation}{section}
+  \renewcommand{\theequation}{\arabic{section}-\arabic{equation}}
+\fi
+
+% === 超連結設定 ===
+\hypersetup{
+  colorlinks=true,
+  linkcolor=black,
+  citecolor=blue,
+  urlcolor=blue
+}
+
+% === 首行縮排 2 字元 ===
+\setlength{\parindent}{2em}
+
+% === 圖表標題置中,名稱中文化 ===
+\captionsetup{justification=centering}
+\edef\twthesis@tmp{%
+  \noexpand\captionsetup[figure]{name={圖},labelsep=\twthesis@caplabelsep}%
+  \noexpand\captionsetup[table]{name={表},labelsep=\twthesis@caplabelsep}}
+\twthesis@tmp
+
+% === 目錄/圖目錄/表目錄標題 ===
+\renewcommand{\contentsname}{目錄}
+\renewcommand{\listfigurename}{圖目錄}
+\renewcommand{\listtablename}{表目錄}
+
+% === 圖目錄/表目錄條目:編號前補「圖 」「表 」,與內文標號一致 ===
+\iftwthesis@lofprefix
+  \renewcommand*\l@figure[2]{%
+    \begingroup
+    \renewcommand*\numberline[1]{\hb@xt@\@tempdima{圖 ##1\hfil}}%
+    \@dottedtocline{1}{0em}{3.5em}{#1}{#2}%
+    \endgroup
+  }
+  \renewcommand*\l@table[2]{%
+    \begingroup
+    \renewcommand*\numberline[1]{\hb@xt@\@tempdima{表 ##1\hfil}}%
+    \@dottedtocline{1}{0em}{3.5em}{#1}{#2}%
+    \endgroup
+  }
+\fi
+
+% === 章節編號 ===
+% 章號用中文數字時，節以下仍用阿拉伯數字（1.1、1.1.1）
+\ifx\twthesis@chapnum\twthesis@zh
+  \renewcommand{\thesection}{\zhnumber{\value{section}}}
+  \renewcommand{\thesubsection}{\arabic{section}.\arabic{subsection}}
+  \renewcommand{\thesubsubsection}{\arabic{section}.\arabic{subsection}.\arabic{subsubsection}}
+  \newcommand{\twthesis@chaplabel}{第\zhnumber{\value{section}}章}
+\else
+  \newcommand{\twthesis@chaplabel}{第\arabic{section}章}
+\fi
+
+% === 章標題格式:置中、加粗、加上「第 X 章」前綴 ===
+\titleformat{\section}
+  {\centering\Large\bfseries}
+  {\twthesis@chaplabel}{1em}{}
+\titlespacing*{\section}{0pt}{0pt}{24pt}
+
+% === 節標題格式 ===
+\titleformat{\subsection}
+  {\large\bfseries}
+  {\arabic{section}.\arabic{subsection}}{1em}{}
+\titlespacing*{\subsection}{0pt}{18pt}{6pt}
+
+% === 小節標題格式 ===
+\titleformat{\subsubsection}
+  {\normalsize\bfseries}
+  {\arabic{section}.\arabic{subsection}.\arabic{subsubsection}}{1em}{}
+\titlespacing*{\subsubsection}{0pt}{12pt}{6pt}
+
+% === 第四層標題格式 ===
+\titleformat{\paragraph}
+  {\normalsize\bfseries}
+  {\arabic{section}.\arabic{subsection}.\arabic{subsubsection}.\arabic{paragraph}}{1em}{}
+\titlespacing*{\paragraph}{0pt}{12pt}{6pt}
+
+% === 頁碼樣式 ===
+\fancypagestyle{frontmatter}{
+  \fancyhf{}
+  \fancyfoot[C]{\thepage}
+  \renewcommand{\headrulewidth}{0pt}
+}
+\fancypagestyle{mainmatter}{
+  \fancyhf{}
+  \fancyfoot[C]{\thepage}
+  \renewcommand{\headrulewidth}{0pt}
+}
+
+% === 左右對齊 ===
+\RequirePackage{ragged2e}
+\justifying
+\setlength{\emergencystretch}{3em}
+
+% === 技術識別符允許在底線處換行;math mode 內保留原行為,避免 \mathit{a\_b} 之類爆掉 ===
+\let\twthesis@origunderscore\_
+\renewcommand{\_}{\ifmmode\twthesis@origunderscore\else\textunderscore\allowbreak\fi}
+
+% === 實驗數據變數套件(在 paper.md 用 \def\xxx{値} + \FPeval 集中管理數字) ===
+\RequirePackage{fp}
+
+% === 參考文獻不印瀏覽日期 ===
+% biblatex 預設對 @online 等條目的 urldate 會輸出「visited on MM/DD/YYYY」。
+% 用 sourcemap 在 biber 資料層 null 掉 urldate；\clearfield{urldate} 清不到拆解後的
+% urlyear/urlmonth/urlday 元件（ieee 樣式實測無效）。biblatex 在本套件之後才載入，
+% 故延到導言區結尾再宣告。
+\iftwthesis@urldate\else
+  \AtEndPreamble{\@ifpackageloaded{biblatex}{%
+    \DeclareSourcemap{\maps[datatype=bibtex]{\map{\step[fieldset=urldate, null]}}}}{}}
+\fi
+
+\endinput

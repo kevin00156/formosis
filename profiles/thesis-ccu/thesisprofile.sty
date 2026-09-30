@@ -1,0 +1,20 @@
+% ============================================================
+% thesis-ccu — 國立中正大學學位論文版面
+%
+% 共用版面在 shared/latex/twthesis.sty；這裡只放中正大學與共用設定不同之處。
+% 封面、書名頁與前置頁順序在 skeleton/paper.md。
+% ============================================================
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{thesisprofile}[2026/09/30 CCU thesis profile]
+
+\RequirePackage[
+  chapnum=zh,          % 第一章
+  eqnum=continuous,    % (1), (2), ...
+  caplabelsep=period,  % 圖1. 標題
+  lofprefix=false,
+  urldate=true,
+]{twthesis}
+
+\newcommand{\ProfileUniversityZh}{國立中正大學}
+
+\endinput
