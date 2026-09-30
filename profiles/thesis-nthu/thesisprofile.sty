@@ -1,0 +1,71 @@
+% ============================================================
+% thesis-nthu — 國立清華大學學位論文版面
+%
+% 依據：國立清華大學研究生畢業論文格式條例（114.05.29 教務會議修正）與
+%       註冊組封面樣本、目次樣本。
+% 共用版面在 shared/latex/twthesis.sty；這裡只放清華大學與共用設定不同之處。
+% 封面、書名頁與前置頁順序在 skeleton/paper.md。
+% 浮水印由博碩士論文庫系統自動嵌入，本 profile 不處理浮水印。
+% ============================================================
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{thesisprofile}[2026/09/30 NTHU thesis profile]
+
+\RequirePackage[
+  chapnum=zh,          % 第一章（目次樣本）
+  secsep=-,            % 1-1、1-1-1，與圖表編號 3-1-2 一致（條例未規定節號）
+  eqnum=section,       % (1-1)（條例未規定）
+  fignum=subsection,   % 圖 3-1-2、表 3-1-2：按章節編碼（條例第七點）
+  caplabelsep=space,   % 圖 3-1-2 標題
+  lofprefix=true,      % 圖次條目：圖 3-1-2 標題
+  urldate=true,        % 網路資料須列擷取日期（條例第十點）
+]{twthesis}
+
+\newcommand{\ProfileUniversityZh}{國立清華大學}
+
+% === 目次、圖次、表次（條例第一點、目次樣本）===
+\renewcommand{\contentsname}{目次}
+\renewcommand{\listfigurename}{圖次}
+\renewcommand{\listtablename}{表次}
+
+% === 章標題 18 級（目次樣本：「目次」二字 18 號字；條例未規定章標題字級，取同一字級）===
+% 目次、圖次、表次、參考文獻標題也由 \section* 產生，一併為 18 級。
+\titleformat*{\section}{\centering\fontsize{18pt}{27pt}\selectfont\bfseries}
+
+% === 目次的章條目：「第一章 ○○○……1」（目次樣本，含點線）===
+% twthesis 的 chapnum=zh 在目次只印「一」；這裡補上「第…章」與點線導引。
+% 未編號條目（摘要、誌謝、參考文獻）不經 \numberline，仍靠左對齊。
+\renewcommand*\l@section[2]{%
+  \addpenalty{-\@highpenalty}%
+  \vskip 0.5em \@plus\p@
+  \begingroup
+  \renewcommand*\numberline[1]{\hb@xt@\@tempdima{第##1章\hfil}}%
+  \@dottedtocline{1}{0em}{4.5em}{#1}{#2}%
+  \endgroup}
+% 圖次、表次條目的編號寬度（圖 3-1-2 較長）
+\renewcommand*\l@figure[2]{%
+  \begingroup
+  \renewcommand*\numberline[1]{\hb@xt@\@tempdima{圖 ##1\hfil}}%
+  \@dottedtocline{1}{0em}{5em}{#1}{#2}%
+  \endgroup}
+\renewcommand*\l@table[2]{%
+  \begingroup
+  \renewcommand*\numberline[1]{\hb@xt@\@tempdima{表 ##1\hfil}}%
+  \@dottedtocline{1}{0em}{5em}{#1}{#2}%
+  \endgroup}
+
+% === 封面年月用中文數字（封面樣本「中華民國一一四年六月」）===
+% \ZhYear{115} → 一一五、\ZhMonth{6} → 六；參數不是純數字（例如還沒替換的 placeholder）時原樣輸出。
+\ExplSyntaxOn
+\cs_new_protected:Npn \__nthu_zh:nn #1#2
+  {
+    \tl_set:Ne \l_tmpa_tl {#2}
+    \regex_match:nVTF { \A[0-9]+\Z } \l_tmpa_tl {#1 {#2}} {#2}
+  }
+\NewDocumentCommand \ZhYear  { m } { \__nthu_zh:nn \zhdigits {#1} }
+\NewDocumentCommand \ZhMonth { m } { \__nthu_zh:nn \zhnumber {#1} }
+\ExplSyntaxOff
+
+% === 插入系統列印的授權書、推薦書、審定書 PDF（\includepdf）===
+\RequirePackage{pdfpages}
+
+\endinput
