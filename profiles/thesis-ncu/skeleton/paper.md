@@ -4,13 +4,13 @@ profile: thesis-ncu  # Formosis 編譯時自動套用此 profile（可被 CLI --
 # ============================================================
 # === NCU 論文基本資訊（請替換以下 placeholder） ===
 # ============================================================
-thesis-title-zh: "<您的論文中文題目>"
-thesis-title-en: "<Your Thesis Title in English>"
+thesis-title-zh: "<您的論文中文題目，請替換>"
+thesis-title-en: "<Your Thesis Title in English, please replace>"
 department: "<您的系所，例如：機械工程學系>"
 program: "<您的學程，例如：光機電工程碩士班>"
 degree: "碩士論文"                  # 或 "博士論文"
-student: "<您的姓名>"
-advisor: "<指導教授姓名> 博士"
+student: "<您的姓名，請替換>"
+advisor: "<指導教授姓名，請替換> 博士"
 year: "<民國年，例如：115>"
 month: "<月份，例如：6>"
 

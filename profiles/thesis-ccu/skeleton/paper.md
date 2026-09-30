@@ -4,14 +4,14 @@ profile: thesis-ccu  # Formosis 編譯時自動套用此 profile（可被 CLI --
 # ============================================================
 # === CCU 論文基本資訊（請替換以下 placeholder） ===
 # ============================================================
-thesis-title-zh: "<您的論文中文題目>"
-thesis-title-en: "<Your Thesis Title in English>"
+thesis-title-zh: "<您的論文中文題目，請替換>"
+thesis-title-en: "<Your Thesis Title in English, please replace>"
 university-zh: "國立中正大學"
 college: "工學院"
 department: "<您的系所，例如：機械工程學系>"
 degree: "碩士論文"                  # 或 "博士論文"
-student: "<您的姓名>"
-advisor: "<指導教授姓名> 博士"
+student: "<您的姓名，請替換>"
+advisor: "<指導教授姓名，請替換> 博士"
 year: "<民國年，例如：115>"
 month: "<月份，例如：6>"
 day: "<日期，例如：20>"

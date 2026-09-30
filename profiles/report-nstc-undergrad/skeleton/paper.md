@@ -5,12 +5,12 @@ profile: report-nstc-undergrad  # Formosis 編譯時自動套用此 profile（�
 # === 國科會大專學生研究計畫成果報告基本資訊 ===
 # === 請替換以下 placeholder ===
 # ============================================================
-project-title-zh: "<您的計畫中文名稱>"
-project-title-en: "<Your Project Title in English>"
-project-id: "NSTC <114-2813-C-XXX-XXX-X>"
+project-title-zh: "<您的計畫中文名稱，請替換>"
+project-title-en: "<Your Project Title in English, please replace>"
+project-id: "NSTC <114-2813-C-XXX-XXX-X，請替換>"
 project-type: "國科會 大專學生專題研究計畫"
-student: "<您的姓名>"
-advisor: "<指導教授姓名>"
+student: "<您的姓名，請替換>"
+advisor: "<指導教授姓名，請替換>"
 period-from: "<起始日期，例如：114年07月01日>"
 period-to: "<結束日期，例如：115年02月28日>"
 period-months: "<月數，例如：計8個月>"
