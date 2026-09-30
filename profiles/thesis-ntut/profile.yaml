@@ -1,0 +1,34 @@
+name: thesis-ntut
+type: thesis
+style: ntut
+description: 國立臺北科技大學（National Taipei University of Technology）學位論文格式。
+# 格式來源：規範的出處與可信度，新增或修改 profile 時務必填寫。
+# status: verified = 已對照校方正式規範；derived = 依實際論文／系所範本推得，未對照校方條文
+source:
+  status: verified
+  basis: >-
+    國立臺北科技大學研究生論文撰寫規範書（J1，114.02.01）；論文撰寫範例（J2，114.02.01）；
+    圖書館研究生畢業論文說明手冊（更新日期 2026.05.06）
+  url: https://oaa.ntut.edu.tw/var/file/8/1008/img/2966/J1.pdf
+  version: "114.02.01"
+  note: >-
+    紙張、邊界（上 2.5、下 2.75、左右 2.5 cm）、頁碼（下方中央、距紙緣 1.75 cm）、
+    標楷體／Times New Roman、12pt、1.5 倍行距、段前段後 0、章 20pt／節 18pt 粗體、
+    章「第一章」節 1.1、公式逐章 (2.4)、表題在上圖題在下、表目錄在圖目錄之前，皆依 J1。
+    1.1.1 用 16pt、1.1.1.1 用 14pt 依 J2 範例（J1 只寫「節標題等可使用 18pt」）。
+    圖表編號採分章「圖 3.1」（J1 亦允許全文流水號，改 fignum=continuous 即可）。
+    J1 說「英文章標題應全部大寫，但 Chapter 不應全部大寫」，同頁範例卻是 Introduction，
+    本 profile 不自動轉大寫，由使用者依系所要求自行書寫。
+    J1 3.1 以雙面印刷為原則，圖書館手冊 7.1 則規定正文 100 頁以上雙面、未滿 100 頁單面；
+    本 profile 輸出左右邊界相同的單面版面，兩種印法皆可直接使用。
+    浮水印須由學生自行加入：從 https://cloud.ncl.edu.tw/ntut/download.php 下載校徽後在
+    paper.md YAML 設 watermark:（置中、約 1/3 版面寬），審定書頁與紙本封面不加。
+    電子檔從書名頁開始（無封面與空白頁），且書名頁校名須改用學校 Logo＋校徽（圖書館手冊 5.3）。
+language: zh-TW
+template: ../../shared/latex/thesis.latex   # 共用模板；學校差異在 thesisprofile.sty
+skeleton: skeleton/
+skill: skill/SKILL.md
+defaults:
+  bib-style: ieee
+  pdf-engine: xelatex
+  csl: shared/cites/ieee.csl
