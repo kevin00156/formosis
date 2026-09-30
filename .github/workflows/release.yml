@@ -51,6 +51,9 @@ jobs:
           cp -r profiles shared scripts docs dist/$ARCHIVE_NAME/
           cp -r examples dist/$ARCHIVE_NAME/
           cp Makefile README.md LICENSE CHANGELOG.md CONTRIBUTING.md pyproject.toml .gitignore dist/$ARCHIVE_NAME/
+          # 兩個範例 PDF 同名，另存成不同檔名再上傳，否則 release 只剩一個
+          cp examples/minimal/paper.pdf dist/example-minimal.pdf
+          cp examples/full/paper.pdf dist/example-full.pdf
           cd dist
           zip -r "${ARCHIVE_NAME}.zip" "$ARCHIVE_NAME"
           tar czf "${ARCHIVE_NAME}.tar.gz" "$ARCHIVE_NAME"
@@ -61,8 +64,8 @@ jobs:
           files: |
             dist/formosis-*.zip
             dist/formosis-*.tar.gz
-            examples/minimal/paper.pdf
-            examples/full/paper.pdf
+            dist/example-minimal.pdf
+            dist/example-full.pdf
           generate_release_notes: true
           draft: false
           prerelease: false
