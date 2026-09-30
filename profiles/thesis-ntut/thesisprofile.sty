@@ -1,0 +1,72 @@
+% ============================================================
+% thesis-ntut — 國立臺北科技大學學位論文版面
+%
+% 共用版面在 shared/latex/twthesis.sty；這裡只放北科大與共用設定不同之處。
+% 封面、書名頁與前置頁順序在 skeleton/paper.md。
+%
+% 依據：國立臺北科技大學研究生論文撰寫規範書（J1，114.02.01）與論文撰寫範例（J2）。
+% 下方註解的條號指 J1。
+% ============================================================
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{thesisprofile}[2026/09/30 NTUT thesis profile]
+
+\RequirePackage[
+  chapnum=zh,          % 第一章（2.10.1）
+  secsep=.,            % 1.1、1.1.1（J2 範例）
+  eqnum=section,       % 逐章編號；下方改成 (2.4)（3.11）
+  fignum=section,      % 分章編號；下方改成 表3.1、圖3.2（3.10.1）
+  caplabelsep=space,   % 中文圖表標題不加句點：圖3.2 每季累計金額（3.10.1）
+  lofprefix=true,      % 圖目錄條目：圖 1.1 標題（J1 範例目錄）
+  urldate=true,
+]{twthesis}
+
+\newcommand{\ProfileUniversityZh}{國立臺北科技大學}
+
+% === 公式、圖表編號用「點」：(2.4)、表3.1、圖3.2（3.10.1、3.11）===
+% twthesis 的 eqnum=section / fignum=section 預設以連字號 (2-4)、圖2-1 輸出。
+\renewcommand{\theequation}{\arabic{section}.\arabic{equation}}
+\renewcommand{\thefigure}{\arabic{section}.\arabic{figure}}
+\renewcommand{\thetable}{\arabic{section}.\arabic{table}}
+
+% === 段前段後 0pt（3.7）===
+% Pandoc 模板未設 indent 時會載入 parskip（段落間加半行），這裡改回 0。
+\AtBeginDocument{\setlength{\parskip}{0pt}}
+
+% === 章：每章新頁起，上方空一行，標題置中 20pt 粗體，下方空一行（2.10.1）===
+% 「空行」＝1.5 倍行高的 12pt 空行（第 2 章前言），即正文的 \baselineskip。
+% 摘要、誌謝、目錄、表目錄、圖目錄、參考文獻標題同為 20pt 粗體、上下各空一行（2.5–2.9、2.11），
+% 它們以 \section* 產生，一併套用。
+\pretocmd{\section}{\clearpage\vspace*{\baselineskip}}{}{%
+  \PackageWarning{thesisprofile}{無法修補 \string\section：章不會自動換頁}}
+\titleformat{\section}
+  {\centering\fontsize{20pt}{24pt}\selectfont\bfseries}
+  {\twthesis@chaplabel}{\twthesis@chapsep}{}
+\titlespacing*{\section}{0pt}{0pt}{\baselineskip}
+
+% === 節：靠左，上方空一行、下方不空行（2.10.2）；字級依 J2 範例 18／16／14pt ===
+\titleformat{\subsection}
+  {\fontsize{18pt}{21.6pt}\selectfont\bfseries}
+  {\thesubsection}{1em}{}
+\titlespacing*{\subsection}{0pt}{\baselineskip}{0pt}
+\titleformat{\subsubsection}
+  {\fontsize{16pt}{19.2pt}\selectfont\bfseries}
+  {\thesubsubsection}{1em}{}
+\titlespacing*{\subsubsection}{0pt}{\baselineskip}{0pt}
+\titleformat{\paragraph}
+  {\fontsize{14pt}{16.8pt}\selectfont\bfseries}
+  {\theparagraph}{1em}{}
+\titlespacing*{\paragraph}{0pt}{\baselineskip}{0pt}
+
+% === 目錄的章條目：「第一章 章標題 ......... 1」，細體加引導點（J1 範例目錄）===
+% article 預設的章條目是粗體、無引導點，且章號盒寬只有 1.5em 放不下「第一章」。
+\renewcommand*\l@section[2]{%
+  \begingroup
+  \renewcommand*\numberline[1]{第##1章\hspace{1em}}%
+  \@dottedtocline{1}{0em}{0em}{#1}{#2}%
+  \endgroup}
+
+% === 圖表標題與圖表間距另加約 6pt（3.10.4）===
+\captionsetup[table]{position=top,skip=6pt}
+\captionsetup[figure]{skip=6pt}
+
+\endinput
