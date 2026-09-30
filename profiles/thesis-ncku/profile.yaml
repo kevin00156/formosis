@@ -1,0 +1,30 @@
+name: thesis-ncku
+type: thesis
+style: ncku
+description: 國立成功大學（National Cheng Kung University）學位論文格式。
+# 格式來源：規範的出處與可信度，新增或修改 profile 時務必填寫。
+# status: verified = 已對照校方正式規範；derived = 依實際論文／系所範本推得，未對照校方條文
+source:
+  status: verified
+  basis: >-
+    國立成功大學博碩士學位論文格式規範（110.01.06 109 學年度第 2 次教務會議修正通過）
+    及附件「英文延伸摘要（Extended Abstract）撰寫格式說明」
+  url: https://cid-acad.ncku.edu.tw/var/file/42/1042/img/730/449865954.pdf
+  version: "110.01.06"
+  note: >-
+    紙張 A4、內頁邊界（上 23、下 35 含頁碼、左 30、右 25 mm）、直式封面邊界
+    （上 23、下 30、左 20、右 20 mm）、封面欄位、前置頁次序（考試合格證明、中文摘要、
+    英文延伸摘要、誌謝、目錄、表目錄、圖目錄、符號）與英文延伸摘要格式依條文。
+    條文未規定主文字型、字級、行距、章節與公式與圖表編號、頁碼位置與編法、每章換頁、
+    封面年份用民國或西元；本 profile 採慣例值（標楷體／Times New Roman 12pt、1.5 倍行距、
+    第一章、1.1、(1-1)、圖1-1、前置頁羅馬數字、民國年），請與系所確認。
+    中文撰寫的論文須附 800–1200 字英文延伸摘要，取代一頁英文摘要；以英文撰寫則不需。
+    浮水印與 DOI 由圖書館系統在審核通過後加入，學生勿自行加入（不要設 watermark:）。
+language: zh-TW
+template: ../../shared/latex/thesis.latex   # 共用模板；學校差異在 thesisprofile.sty
+skeleton: skeleton/
+skill: skill/SKILL.md
+defaults:
+  bib-style: ieee
+  pdf-engine: xelatex
+  csl: shared/cites/ieee.csl

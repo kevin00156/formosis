@@ -1,0 +1,78 @@
+% ============================================================
+% thesis-ncku — 國立成功大學學位論文版面
+%
+% 共用版面在 shared/latex/twthesis.sty；這裡只放成功大學與共用設定不同之處。
+% 封面、考試合格證明與前置頁順序在 skeleton/paper.md。
+%
+% 依據：國立成功大學博碩士學位論文格式規範（110.01.06 修正）與附件
+% 「英文延伸摘要（Extended Abstract）撰寫格式說明」。
+% 規範只訂紙張、邊界、前置頁次序與延伸摘要格式；章節、公式與圖表編號、
+% 字型字級、行距校級未規定，下列選項為慣例值，請與系所確認。
+% ============================================================
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{thesisprofile}[2026/09/30 NCKU thesis profile]
+
+\RequirePackage[
+  chapnum=zh,          % 第一章（條文未規定，慣例）
+  secsep=.,            % 1.1、1.1.1（條文未規定，慣例）
+  eqnum=section,       % (1-1)（條文未規定，慣例）
+  fignum=section,      % 圖1-1、表1-1（條文未規定，慣例）
+  caplabelsep=space,   % 圖1-1 標題
+  lofprefix=true,      % 表目錄/圖目錄條目：表 1-1 標題
+]{twthesis}
+
+\newcommand{\ProfileUniversityZh}{國立成功大學}
+
+% === 目錄的章條目印「第一章」===
+% twthesis 的 chapnum=zh 在目錄只印「一」；補上「第…章」與內文章標題一致（條文未規定，慣例）。
+\let\ncku@l@section\l@section
+\renewcommand*\l@section[2]{%
+  \begingroup
+  \let\ncku@numberline\numberline
+  \renewcommand*\numberline[1]{第##1章\hspace{1em}}%
+  \ncku@l@section{#1}{#2}%
+  \endgroup}
+
+% === 每章另起一頁 ===
+% 條文未規定，依學位論文慣例；目錄、參考文獻等無編號的 \section* 也一併換頁。
+\pretocmd{\section}{\clearpage}{}{}
+
+% === 英文延伸摘要（Extended Abstract）===
+% 格式規範備註三：以中文撰寫的論文須附 800–1200 字英文延伸摘要，取代一頁英文摘要，
+% 置於中文摘要之後。附件格式說明：
+%   (三)       紙張、欄數、內頁邊界同主文
+%   (四)(1)    題目 14 pt 粗體置中；(2) 作者資料 12 pt 標準字置中
+%   (四)(3)    內文標題 12 pt 粗體置中全大寫；子標題 12 pt 粗體靠左；段首不空字元
+%   (四)(4)    單行間距；字型建議 Times New Roman
+%   圖表範例    標題 12 pt 粗體，表題在表上方、圖題在圖下方，寫全 Table / Figure
+% 延伸摘要內的圖表不列入表目錄/圖目錄；結束後圖表計數歸零，主文仍從 1-1 起算。
+\RequirePackage{setspace}
+\newenvironment{ExtendedAbstract}{%
+  \clearpage
+  \setstretch{1}%
+  \setlength{\parindent}{0pt}%
+  \setlength{\parskip}{6pt}%
+  \renewcommand{\thefigure}{\arabic{figure}}%
+  \renewcommand{\thetable}{\arabic{table}}%
+  \setcounter{figure}{0}\setcounter{table}{0}%
+  \captionsetup[figure]{name=Figure,labelsep=period,font=bf,list=no,position=bottom}%
+  \captionsetup[table]{name=Table,labelsep=period,font=bf,list=no,position=top}%
+}{%
+  \par
+  \setcounter{figure}{0}\setcounter{table}{0}%
+  \clearpage
+}
+% 題目與作者資料：\EATitle{題目}{作者}{指導教授}{系所與學院}
+\newcommand{\EATitle}[4]{%
+  \begin{center}
+    {\fontsize{14pt}{16.8pt}\selectfont\bfseries #1\par}
+    \vspace{12pt}
+    #2\par #3\par #4\par
+  \end{center}\par}
+% 內文主標題（SUMMARY、INTRODUCTION…）與子標題
+\newcommand{\EAHeading}[1]{%
+  \par\vspace{12pt}{\centering\bfseries\MakeUppercase{#1}\par}\vspace{6pt}}
+\newcommand{\EASubheading}[1]{%
+  \par\vspace{6pt}{\noindent\bfseries #1\par}}
+
+\endinput
