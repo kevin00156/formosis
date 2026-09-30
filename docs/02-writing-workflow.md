@@ -8,7 +8,7 @@
 
 ```
 1. 用 --list-profiles 選定 profile，複製 profiles/<profile>/skeleton/ 為自己的資料夾
-2. 設定 Zotero 自動匯出 references.bib
+2. 選定文獻來源：DOI 自動補、Zotero 同步，或讓 Claude 經 Zotero MCP 操作（見 docs/03）
 3. 編輯 paper.md（YAML metadata + 章節內容）
 4. 邊寫邊用 scripts/build.sh / scripts/build.ps1 編譯預覽
 5. 完稿後用監看模式作最後校對
@@ -108,6 +108,8 @@ Vaswani 等人[@vaswani2017attention]提出 Transformer 架構。
 近期研究[@he2016resnet; @dosovitskiy2020vit]證實...
 ```
 
+citekey 從哪來：用 `scripts/cite.py add <DOI>` 自動加入、從 Zotero 條目複製，或直接請 Claude 找文獻並引用。三種方式的設定見 [03-zotero-setup.md](03-zotero-setup.md)。
+
 ### 插入圖片
 
 ```markdown
@@ -200,6 +202,7 @@ make build INPUT=my-thesis/paper.md
 - 「這段公式排版有問題嗎？符合 NCU 規範嗎？」
 - 「幫我把第 3.2 節重新組織，分成 2-3 個小節」
 - 「檢查整篇有沒有用到禁止的破折號」
+- 「幫我找 ResNet 原始論文並在這句後面引用」（有設 Zotero MCP 時會直接加進你的 Zotero；沒有時以 DOI 寫入 `references.bib`）
 
 Skill 會自動載入 NCU 格式規範，並會：
 
