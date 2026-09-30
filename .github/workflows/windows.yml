@@ -1,0 +1,59 @@
+name: Windows
+
+# 維護者沒有 Windows 電腦時，由 GitHub 的 Windows runner 代為驗證 .ps1 腳本。
+# 使用 Windows PowerShell 5.1（powershell.exe，使用者電腦上的預設版本），不是 pwsh 7。
+# 不裝 TeX（MiKTeX 安裝太慢）；完整編譯仍由 build.yml 在 Linux container 內跑。
+on:
+  pull_request:
+    branches: [main, master]
+  push:
+    branches: [main, master]
+    paths:
+      - 'scripts/**'
+      - 'tests/**'
+      - '.github/workflows/windows.yml'
+  workflow_dispatch:
+
+jobs:
+  powershell:
+    name: PowerShell 5.1 smoke test
+    runs-on: windows-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # CLAUDE.md：所有 .ps1 必須是 UTF-8 with BOM，否則 PowerShell 5.1 以 Big5 讀取中文而 parse error
+      - name: All .ps1 files have UTF-8 BOM
+        shell: powershell
+        run: |
+          $bad = Get-ChildItem -Recurse -Filter *.ps1 | Where-Object {
+            $b = [System.IO.File]::ReadAllBytes($_.FullName)
+            -not ($b.Length -ge 3 -and $b[0] -eq 0xEF -and $b[1] -eq 0xBB -and $b[2] -eq 0xBF)
+          }
+          if ($bad) { $bad | ForEach-Object { Write-Host "::error file=$($_.FullName)::missing UTF-8 BOM" }; exit 1 }
+
+      - name: All .ps1 files parse under PowerShell 5.1
+        shell: powershell
+        run: |
+          $failed = $false
+          foreach ($f in Get-ChildItem -Recurse -Filter *.ps1) {
+            $errors = $null
+            [System.Management.Automation.Language.Parser]::ParseFile($f.FullName, [ref]$null, [ref]$errors) | Out-Null
+            foreach ($e in $errors) {
+              Write-Host "::error file=$($f.FullName),line=$($e.Extent.StartLineNumber)::$($e.Message)"
+              $failed = $true
+            }
+          }
+          if ($failed) { exit 1 }
+
+      - name: build.ps1 runs (-ListProfiles)
+        shell: powershell
+        run: .\scripts\build.ps1 -ListProfiles
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Python script unit tests on Windows
+        run: python -m unittest discover -s tests -v
