@@ -1,0 +1,33 @@
+name: thesis-nycu
+type: thesis
+style: nycu
+description: 國立陽明交通大學（National Yang Ming Chiao Tung University）學位論文格式。
+# 格式來源：規範的出處與可信度，新增或修改 profile 時務必填寫。
+# status: verified = 已對照校方正式規範；derived = 依實際論文／系所範本推得，未對照校方條文
+source:
+  status: verified
+  basis: >-
+    國立陽明交通大學博碩士學位論文格式規範（教務處 2026-09-17 版，文件未載修訂日期，
+    以檔名時間戳為版次）；圖書館〈論文插入浮水印〉說明（2023-05-11）
+  url: https://aa.nycu.edu.tw/userfiles/aach/files/20260917102312466.pdf
+  version: "2026-09-17"
+  note: >-
+    紙張 A4、內文邊界（上 2.5、下 2.5、左 3、右 2 cm）、頁碼於底端 1.5 cm 處置中、
+    封面（附件 1，上下 3 cm）與書名頁（附件 2，上下 2 cm）版型與字級、民國與西元年月並列
+    （上傳電子論文之年月）、前置頁與文末聲明書次序、頁碼編法（中文摘要至圖表目錄羅馬數字、
+    第一章起阿拉伯數字）、目錄「第一章」依條文。全校規範未訂內文字型、字級、行距、
+    公式與圖表格式，交由各教學單位另訂；本 profile 採慣例值（標楷體／Times New Roman
+    12pt、1.5 倍行距、1.1、(1-1)、圖1-1），請與系所確認。節編號條文允許「第一節」或
+    「1.1」，本 profile 採 1.1。誌謝排在中文摘要之前，條文未規定其頁碼，本 profile 不編頁碼。
+    學生須自行加浮水印：自書名頁起每頁都要，從圖書館下載 Thesis_mark.png
+    （https://www.lib.nycu.edu.tw/nycu/download/6694）後在 paper.md YAML 設
+    watermark:，thesisprofile.sty 已處理置中、大小與刷淡；圖檔不隨 profile 散布。
+    學位論文發表形式確認書（附件 5）必須納入論文。
+language: zh-TW
+template: ../../shared/latex/thesis.latex   # 共用模板；學校差異在 thesisprofile.sty
+skeleton: skeleton/
+skill: skill/SKILL.md
+defaults:
+  bib-style: ieee
+  pdf-engine: xelatex
+  csl: shared/cites/ieee.csl

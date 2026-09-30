@@ -1,0 +1,91 @@
+% ============================================================
+% thesis-nycu — 國立陽明交通大學學位論文版面
+%
+% 共用版面在 shared/latex/twthesis.sty；這裡只放陽明交大與共用設定不同之處。
+% 封面、書名頁、前置頁與文末聲明書順序在 skeleton/paper.md。
+%
+% 依據：國立陽明交通大學博碩士學位論文格式規範（教務處 2026-09-17 版）與
+% 圖書館〈論文插入浮水印〉說明（2023-05-11）。
+% 全校規範未訂內文字型、字級、行距、公式與圖表格式（交由各教學單位），
+% 下列未註明條文者為慣例值，請與系所確認。
+% ============================================================
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{thesisprofile}[2026/09/30 NYCU thesis profile]
+
+\RequirePackage[
+  chapnum=zh,          % 第一章（附件 4 目錄樣本）
+  secsep=.,            % 1.1（附件 4：節用「第一節」或「1.1」，本 profile 採 1.1）
+  eqnum=section,       % (1-1)（條文未規定，慣例）
+  fignum=section,      % 圖1-1、表1-1（條文未規定，慣例）
+  caplabelsep=space,   % 圖1-1 標題
+  lofprefix=true,      % 圖目錄/表目錄條目：圖 1-1 標題
+]{twthesis}
+
+\newcommand{\ProfileUniversityZh}{國立陽明交通大學}
+
+% === 目錄的章條目印「第一章」===
+% 附件 4 目錄樣本為「第一章 緒論」；twthesis 的 chapnum=zh 在目錄只印「一」。
+\let\nycu@l@section\l@section
+\renewcommand*\l@section[2]{%
+  \begingroup
+  \let\nycu@numberline\numberline
+  \renewcommand*\numberline[1]{第##1章\hspace{1em}}%
+  \nycu@l@section{#1}{#2}%
+  \endgroup}
+
+% === 每章另起一頁 ===
+% 規範二.13、二.14：參考文獻、附錄各自另起一頁；章也依慣例換頁。
+\pretocmd{\section}{\clearpage}{}{}
+
+% === 封面與書名頁的年月 ===
+% 附件 1、2：民國年月用中文數字（中華民國一一五年六月），並列西元（June 2026）；
+% 年月為上傳電子論文至圖書館論文系統之年月。由 YAML year（民國年）、month 自動換算；
+% 尚未填入數字時原樣輸出 placeholder。
+\RequirePackage{zhnumber}
+\ExplSyntaxOn
+\cs_new_protected:Npn \nycu_if_int:NTF #1#2#3
+  { \regex_match:nVTF { \A [0-9]+ \Z } #1 {#2} {#3} }
+\NewDocumentCommand \NYCUDateZh { }
+  {
+    中華民國
+    \nycu_if_int:NTF \ROCYear { \zhdigits { \ROCYear } } { \ROCYear }
+    年
+    \nycu_if_int:NTF \ROCMonth { \zhnumber { \ROCMonth } } { \ROCMonth }
+    月
+  }
+\NewDocumentCommand \NYCUDateEn { }
+  {
+    \nycu_if_int:NTF \ROCMonth
+      {
+        \int_case:nnF { \ROCMonth }
+          {
+            {1}{January} {2}{February} {3}{March} {4}{April}
+            {5}{May} {6}{June} {7}{July} {8}{August}
+            {9}{September} {10}{October} {11}{November} {12}{December}
+          }
+          { \ROCMonth }
+      }
+      { <Month> }
+    \c_space_tl
+    \nycu_if_int:NTF \ROCYear { \int_eval:n { \ROCYear + 1911 } } { <Year> }
+  }
+\ExplSyntaxOff
+
+% === 浮水印（學生自行加入）===
+% 圖書館〈論文插入浮水印〉：自書名頁起至最後一頁每頁都要加；用圖書館提供的 PNG
+% （Thesis_mark.png），縮放自動、勾選「刷淡」；浮水印過大或過深是常見退件原因。
+% 官方範例（Word 自動縮放）的校徽圖檔置中、寬約 18 cm（圖檔四周有透明留白，校徽本體
+% 約 11 cm）。這裡以 TikZ 不透明度 0.15 模擬 Word 的「刷淡」。
+% YAML 設 watermark: 才會啟用；封面以 \WatermarkOff 關閉，書名頁起 \WatermarkOn。
+\RequirePackage{tikz}
+% XeLaTeX（xdvipdfmx）下 pgf 只在「出現透明度之後」的頁面才把 ExtGState 資源掛上頁面；
+% 浮水印在 shipout 時才畫，第一個加浮水印的頁面（書名頁）會漏掛，刷淡失效變全黑。
+% 預先宣告資源存在，讓每一頁都掛上同一個 ExtGState 物件。
+\ifcsname ifpgf@sys@pdf@extgs@exists\endcsname
+  \global\csname pgf@sys@pdf@extgs@existstrue\endcsname
+\fi
+\renewcommand{\TwthesisWatermarkPlace}[1]{%
+  \put(0.5\paperwidth,0.5\paperheight){\makebox(0,0){%
+    \tikz\node[opacity=0.15,inner sep=0pt]{\includegraphics[width=18cm]{#1}};}}}
+
+\endinput
