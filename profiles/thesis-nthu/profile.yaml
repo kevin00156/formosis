@@ -1,0 +1,31 @@
+name: thesis-nthu
+type: thesis
+style: nthu
+description: 國立清華大學（National Tsing Hua University）學位論文格式。
+# 格式來源：規範的出處與可信度，新增或修改 profile 時務必填寫。
+# status: verified = 已對照校方正式規範；derived = 依實際論文／系所範本推得，未對照校方條文
+source:
+  status: verified
+  basis: >-
+    國立清華大學研究生畢業論文格式條例（114.05.29 第 113 學年度第 4 次教務會議修正第一～十四點）；
+    註冊組封面樣本、目次樣本
+  url: https://registra.site.nthu.edu.tw/p/404-1211-5155.php
+  version: "114.05.29"
+  note: >-
+    邊界（上 3／下 2.5／左右 3 cm）、12 級標楷體／Times New Roman、中英文皆 1.5 行距、頁碼置中、
+    前置頁順序（含封面後空白頁、誌謝在摘要之後）、圖表按章節編號「圖 3-1-2」且圖題在下／表題在上、
+    封面樣本（上下 2.54／左右 3.18 cm，字級 24/18–20/18，民國與西元年月並列）依條例與樣本。
+    條文未規定而採慣例值：節號 1-1（目次樣本寫「第一節」，本 profile 以 1-1 與圖表編號一致）、
+    公式分章編號 (1-1)、章標題 18 級（同目次樣本「目次」字級）、頁碼距底距離。
+    參考文獻採 biblatex-apa（作者，年份）夾註；條例要求夾註「作者全名」，APA 只列姓氏，
+    中文作者姓名排序與縮寫也需人工檢查，系所另有規定時改 biblio-style。
+    官方 LaTeX 範本（CC BY 4.0）的下邊界 3 cm 與圖表「圖 2.1」編號和條例不符，本 profile 以條例為準。
+    浮水印由博碩士論文庫系統於上傳後自動嵌入，學生不要自行加（勿設 watermark:）。
+    授權書、推薦書、審定書須由系統列印後以 \includepdf 插入。
+language: zh-TW
+template: ../../shared/latex/thesis.latex   # 共用模板；學校差異在 thesisprofile.sty
+skeleton: skeleton/
+skill: skill/SKILL.md
+defaults:
+  bib-style: apa
+  pdf-engine: xelatex
