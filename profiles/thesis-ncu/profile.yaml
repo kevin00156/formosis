@@ -2,6 +2,21 @@ name: thesis-ncu
 type: thesis
 style: ncu
 description: 國立中央大學（National Central University）學位論文格式。
+# 格式來源：規範的出處與可信度，新增或修改 profile 時務必填寫。
+# status: verified = 已對照校方正式規範；derived = 依實際論文／系所範本推得，未對照校方條文
+source:
+  status: verified
+  basis: >-
+    國立中央大學研究生畢業論文格式條例（教務處表單 3-02-1，版次 1141027）；
+    學位論文撰寫體例參考（表單 3-02-2，版次 114.09.25）
+  url: https://pdc.adm.ncu.edu.tw/p/412-1019-1706.php?Lang=zh-tw
+  version: "114.09.25"
+  note: >-
+    紙張、邊界、行距、圖表全文連續編號與校方條文一致。條文的章節與公式編號為
+    章「一、」、節「1-1」、公式全文連續 (1)；本 profile 為維持既有論文相容，預設沿用
+    「第1章」、1.1、(1-1)，要完全依條文請在 thesisprofile.sty 改
+    chapnum=zhenum, secsep=-, eqnum=continuous。條文未規定字型與字級（標楷體／
+    Times New Roman 12pt 依封面樣本與慣例）。浮水印由圖書館系統加入，勿自行加。
 language: zh-TW
 template: ../../shared/latex/thesis.latex   # 共用模板；學校差異在 thesisprofile.sty
 skeleton: skeleton/

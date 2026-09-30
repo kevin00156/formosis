@@ -7,7 +7,13 @@ description: 國立中正大學（National Chung Cheng University）學位論文
 source:
   status: derived
   basis: 國立中正大學機械工程學系實驗室學長通過口試之論文 Word 檔
-  note: 非校方正式規範。其他系所的邊界、封面等細節可能不同，請與系辦或指導教授確認。
+  url: https://oaa.ccu.edu.tw/var/file/4/1004/img/832/186876826.pdf
+  note: >-
+    中正大學現行校方文件（學位論文管理要點，112.05.08 修正）未規定版面格式，由各系所自訂；
+    本 profile 非校方正式規範，其他系所請與系辦或指導教授確認。邊界 2.5/2.5/3/2 cm 與 90 年
+    舊版校級「學位論文格式規範」相同，但該規範已非現行；電機／通訊所等採 Word 預設
+    2.54/3.17 cm。上傳圖書館前全文須自行嵌入中正大學浮水印
+    （https://cloud.ncl.edu.tw/ccu/download.php，在 paper.md YAML 設 watermark:）。
 language: zh-TW
 template: ../../shared/latex/thesis.latex   # 共用模板；學校差異在 thesisprofile.sty
 skeleton: skeleton/

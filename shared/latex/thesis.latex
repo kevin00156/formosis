@@ -464,6 +464,10 @@ $endif$
 % 使用者 YAML 中的 header-includes 會在這之後 append，可 override 此處任何一條。
 % ============================================================
 \usepackage{thesisprofile}
+$if(watermark)$
+% === 浮水印(YAML watermark:,學校要求學生自行加入時才設) ===
+\TwthesisWatermark{$watermark$}
+$endif$
 
 % === 使用者 YAML header-includes(可 override 上方任何一條) ===
 $for(header-includes)$
