@@ -1,5 +1,5 @@
 ---
-profile: slides-ncu  # PaperForge 編譯時自動套用此 profile（可被 CLI --profile 覆寫）
+profile: slides-ncu  # Formosis 編譯時自動套用此 profile（可被 CLI --profile 覆寫）
 marp: true
 theme: ncu
 paginate: true

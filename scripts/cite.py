@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""PaperForge cite — 文獻自動化，省掉 Zotero GUI 操作。
+"""Formosis cite — 文獻自動化，省掉 Zotero GUI 操作。
 
 三層設計（詳見 docs/03-zotero-setup.md）：
   A. 不需 Zotero：`add` 以 DOI / arXiv ID 取得 BibTeX，去重後寫入 .bib
@@ -40,7 +40,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from lint import resolve_bib, split_frontmatter  # noqa: E402
 
-USER_AGENT = "PaperForge-cite (+https://github.com/kevin00156/paperforge)"
+USER_AGENT = "Formosis-cite (+https://github.com/kevin00156/formosis)"
 FETCH_TIMEOUT_S = 20.0
 # 編譯前的同步只是順手，Zotero 沒開時不該讓每次編譯多等好幾秒
 SYNC_TIMEOUT_S = 3.0

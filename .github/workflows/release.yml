@@ -38,7 +38,7 @@ jobs:
       - name: Create release archive
         run: |
           TAG="${GITHUB_REF#refs/tags/}"
-          ARCHIVE_NAME="paperforge-${TAG}"
+          ARCHIVE_NAME="formosis-${TAG}"
           mkdir -p dist/$ARCHIVE_NAME
           cp -r profiles shared scripts docs dist/$ARCHIVE_NAME/
           cp -r examples dist/$ARCHIVE_NAME/
@@ -51,8 +51,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            dist/paperforge-*.zip
-            dist/paperforge-*.tar.gz
+            dist/formosis-*.zip
+            dist/formosis-*.tar.gz
             examples/minimal/paper.pdf
             examples/full/paper.pdf
           generate_release_notes: true

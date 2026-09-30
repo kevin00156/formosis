@@ -1,7 +1,7 @@
 ﻿#Requires -Version 5.1
 <#
 .SYNOPSIS
-    PaperForge 跨平台編譯腳本 (Windows PowerShell)
+    Formosis 跨平台編譯腳本 (Windows PowerShell)
 
 .DESCRIPTION
     將 Markdown 編譯成 PDF。會根據檔名自動分派：
@@ -129,7 +129,7 @@ $RepoRoot = Split-Path -Parent $ScriptDir
 # --- 列出 profiles\*\profile.yaml 的 name / type / style / description ---
 # 動態枚舉，新增 profile 自動出現，無需維護清單。
 function Show-ProfileList {
-    Write-Host "PaperForge — 可用 profile（profiles\<name>\）：`n"
+    Write-Host "Formosis — 可用 profile（profiles\<name>\）：`n"
     Write-Host ("  {0,-26} {1,-8} {2,-10} {3}" -f "NAME", "TYPE", "STYLE", "DESCRIPTION")
     $found = 0
     foreach ($yaml in Get-ChildItem -Path (Join-Path $RepoRoot "profiles") -Filter "profile.yaml" -Recurse -ErrorAction SilentlyContinue) {
@@ -422,7 +422,7 @@ function Invoke-ZoteroSync {
 }
 
 function Invoke-Build {
-    $tmpdir = Join-Path $env:TEMP "paperforge_$([System.IO.Path]::GetRandomFileName())"
+    $tmpdir = Join-Path $env:TEMP "formosis_$([System.IO.Path]::GetRandomFileName())"
     New-Item -ItemType Directory -Path $tmpdir -Force | Out-Null
 
     try {
@@ -433,7 +433,9 @@ function Invoke-Build {
 
         # 複製來源目錄到暫存
         Write-Info "複製來源檔案到暫存目錄"
-        Copy-Item -Path "$SrcDir\*" -Destination $tmpdir -Recurse -Force
+        # 論文資料夾通常是獨立 git repo，.git 不需要也可能很大，略過
+        Get-ChildItem -Path $SrcDir -Force | Where-Object { $_.Name -ne ".git" } |
+            Copy-Item -Destination $tmpdir -Recurse -Force
 
         # 複製模板到暫存（內部統一命名為 template.latex）
         Copy-Item -Path $Template -Destination (Join-Path $tmpdir "template.latex") -Force
@@ -601,6 +603,13 @@ function Invoke-Watch {
     finally {
         $watcher.Dispose()
     }
+}
+
+# --- 新版提醒（scripts\update.py；每天最多連網一次，失敗或離線都不出聲）---
+$updater = Join-Path $ScriptDir "update.py"
+$py = Resolve-Python
+if ($py -and (Test-Path $updater)) {
+    Invoke-Native -Cmd $py -ArgList @($updater, "check") -ShowOutput | Out-Null
 }
 
 # --- 主流程 ---

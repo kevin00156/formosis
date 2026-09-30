@@ -1,6 +1,6 @@
 # 01 — 安裝教學
 
-本文件詳細說明 PaperForge 各平台的安裝步驟，以及常見安裝問題的排解。
+本文件詳細說明 Formosis 各平台的安裝步驟，以及常見安裝問題的排解。
 
 ## 系統需求
 
@@ -16,8 +16,8 @@
 1. 開啟 PowerShell（建議「以系統管理員身分執行」）
 2. Clone repo 並執行安裝腳本：
    ```powershell
-   git clone https://github.com/kevin00156/paperforge.git
-   cd paperforge
+   git clone https://github.com/kevin00156/formosis.git
+   cd formosis
    .\scripts\install.ps1
    ```
 
@@ -29,8 +29,8 @@ Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
 ### Linux (Ubuntu / Debian / Fedora / Arch)
 
 ```bash
-git clone https://github.com/kevin00156/paperforge.git
-cd paperforge
+git clone https://github.com/kevin00156/formosis.git
+cd formosis
 bash scripts/install.sh
 ```
 
@@ -38,8 +38,8 @@ bash scripts/install.sh
 
 確認已安裝 [Homebrew](https://brew.sh)，然後：
 ```bash
-git clone https://github.com/kevin00156/paperforge.git
-cd paperforge
+git clone https://github.com/kevin00156/formosis.git
+cd formosis
 bash scripts/install.sh
 ```
 
@@ -63,7 +63,7 @@ bash scripts/install.sh --skill-only
 
 ## 查看可用 profile
 
-PaperForge 以 **profile** 區分不同學校 / 機關的論文、報告、簡報格式。安裝完成後，用以下指令列出目前支援哪些 profile（會自動枚舉 `profiles/` 目錄，不必去翻原始碼）：
+Formosis 以 **profile** 區分不同學校 / 機關的論文、報告、簡報格式。安裝完成後，用以下指令列出目前支援哪些 profile（會自動枚舉 `profiles/` 目錄，不必去翻原始碼）：
 
 ```bash
 ./scripts/build.sh --list-profiles      # Linux/macOS
@@ -142,6 +142,36 @@ python scripts/check-fonts.py
 ```
 
 如果沒有偵測到「標楷體」，請參考 [docs/05-troubleshooting.md](05-troubleshooting.md#中文字體缺失)。
+
+## 更新
+
+有新版本時，編譯時終端機會多印一行提醒（每天最多檢查一次，離線時不會出聲、也不會拖慢編譯）：
+
+```
+[UPDATE] Formosis v0.3.0 已發布（目前 v0.2.0）；執行 make update（或 python3 scripts/update.py apply）更新
+```
+
+更新指令：
+
+```bash
+make update                        # Linux/macOS
+python3 scripts/update.py apply    # 同上
+python scripts\update.py apply     # Windows
+python3 scripts/update.py status   # 只看目前版本與最新版本
+```
+
+`update` 會：
+
+1. 確認工具 repo 在 `main` 分支、且受版控的檔案沒被改過（改過就停下來，不會覆蓋你的修改）
+2. 快轉（fast-forward）到最新 release
+3. 如果這次更新改到 `profiles/` 或 `shared/`（論文格式相關），列出變動的檔案，提醒你重新編譯並檢查 PDF
+4. 重新安裝各 profile 的 Claude Skill，讓撰寫規範與新模板一致
+
+**不會自動更新**：只有你執行 `update` 時才會動作。快口試時如果不想冒格式變動的風險，看到提醒可以先不理會。
+
+**你的論文不受影響**：用 `scripts/new-thesis` 建立的論文資料夾是獨立的 git repo，更新只動工具本身。
+
+不想看到提醒：設定環境變數 `FORMOSIS_NO_UPDATE_CHECK=1`。
 
 ## 卸載
 

@@ -21,9 +21,19 @@ jobs:
 
       # 用 --ci 跑全套：SKILL frontmatter + 所有 skeleton/examples 論文 + 所有 marp 簡報。
       # 只有 error 級會讓 CI 失敗；warn 級（死引用）留給互動式 build / 本機顯示。
-      - name: Run PaperForge lint (scripts/lint.py)
+      - name: Run Formosis lint (scripts/lint.py)
         run: python3 scripts/lint.py --ci
 
       # scripts/ 下 Python 工具的單元測試（標準函式庫 unittest，不需安裝套件、不連網）
       - name: Run script unit tests
         run: python3 -m unittest discover -s tests -v
+
+      - name: new-thesis.sh creates an independent thesis repo
+        run: |
+          git config --global user.email "ci@example.com"
+          git config --global user.name "CI"
+          ./scripts/new-thesis.sh thesis-ncu ci-thesis
+          test -f ci-thesis/paper.md
+          test "$(git -C ci-thesis log --oneline | wc -l)" -eq 1
+          python3 -c "import json; assert json.load(open('ci-thesis/.claude/settings.json'))['claudeMdExcludes']"
+          if git status --porcelain --untracked-files=all | grep -q ci-thesis; then echo "outer repo does not ignore ci-thesis"; exit 1; fi

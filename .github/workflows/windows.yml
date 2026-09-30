@@ -51,6 +51,19 @@ jobs:
         shell: powershell
         run: .\scripts\build.ps1 -ListProfiles
 
+      - name: new-thesis.ps1 creates an independent thesis repo
+        shell: powershell
+        run: |
+          git config --global user.email "ci@example.com"
+          git config --global user.name "CI"
+          .\scripts\new-thesis.ps1 thesis-ncu ci-thesis
+          if (-not (Test-Path ci-thesis\paper.md)) { throw "paper.md missing" }
+          if (-not (Test-Path ci-thesis\.git)) { throw "thesis repo not initialised" }
+          $settings = Get-Content ci-thesis\.claude\settings.json -Raw | ConvertFrom-Json
+          if (-not $settings.claudeMdExcludes) { throw "claudeMdExcludes missing" }
+          if (git status --porcelain --untracked-files=all | Select-String "ci-thesis") { throw "outer repo does not ignore ci-thesis" }
+          if ((git -C ci-thesis log --oneline | Measure-Object).Count -ne 1) { throw "initial commit missing" }
+
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'

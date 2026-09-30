@@ -56,13 +56,13 @@ jobs:
           context: docker
           file: docker/paper.Dockerfile
           load: true
-          tags: paperforge-paper:ci
-          cache-from: type=gha,scope=paperforge-paper
-          cache-to: type=gha,mode=max,scope=paperforge-paper
+          tags: formosis-paper:ci
+          cache-from: type=gha,scope=formosis-paper
+          cache-to: type=gha,mode=max,scope=formosis-paper
 
       - name: Verify environment
         run: |
-          docker run --rm paperforge-paper:ci bash -c '
+          docker run --rm formosis-paper:ci bash -c '
             pandoc --version | head -n1
             xelatex --version | head -n1
             biber --version | head -n1
@@ -88,7 +88,7 @@ jobs:
           CI_MAIN_FONT: "Latin Modern Roman"
           CI_CJK_FONT: "AR PL UKai TW"
         run: |
-          run() { docker run --rm -v "$PWD":/workspace -w /workspace paperforge-paper:ci "$@"; }
+          run() { docker run --rm -v "$PWD":/workspace -w /workspace formosis-paper:ci "$@"; }
           shopt -s nullglob
           found=0
           for md in profiles/*/skeleton/paper.md; do
@@ -114,7 +114,7 @@ jobs:
       # examples/full 額外驗證富功能（圖表 / 公式 / 引用），與 skeleton smoke test 互補。
       - name: Build & verify full example (feature coverage)
         run: |
-          docker run --rm -v "$PWD":/workspace -w /workspace paperforge-paper:ci \
+          docker run --rm -v "$PWD":/workspace -w /workspace formosis-paper:ci \
             ./scripts/build.sh examples/full/paper.md --verbose
           pdf="examples/full/paper.pdf"
           size=$(stat -c%s "$pdf")
@@ -164,13 +164,13 @@ jobs:
           context: docker
           file: docker/slides.Dockerfile
           load: true
-          tags: paperforge-slides:ci
-          cache-from: type=gha,scope=paperforge-slides
-          cache-to: type=gha,mode=max,scope=paperforge-slides
+          tags: formosis-slides:ci
+          cache-from: type=gha,scope=formosis-slides
+          cache-to: type=gha,mode=max,scope=formosis-slides
 
       - name: Verify environment
         run: |
-          docker run --rm paperforge-slides:ci bash -c '
+          docker run --rm formosis-slides:ci bash -c '
             node --version
             marp --version
             fc-list :lang=zh-tw | head -n3
@@ -184,7 +184,7 @@ jobs:
       - name: Build & verify every profile skeleton (slides)
         shell: bash
         run: |
-          run() { docker run --rm -v "$PWD":/workspace -w /workspace paperforge-slides:ci "$@"; }
+          run() { docker run --rm -v "$PWD":/workspace -w /workspace formosis-slides:ci "$@"; }
           shopt -s nullglob
           found=0
           for md in profiles/*/skeleton/slides.md; do

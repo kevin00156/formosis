@@ -1,7 +1,7 @@
 ﻿#Requires -Version 5.1
 <#
 .SYNOPSIS
-    PaperForge Windows 一鍵安裝腳本
+    Formosis Windows 一鍵安裝腳本
 
 .DESCRIPTION
     安裝以下項目：
@@ -112,7 +112,7 @@ function Test-Command {
 Write-Host @"
 
 ╔══════════════════════════════════════════════════════════════╗
-║          PaperForge 安裝腳本 (Windows)                       ║
+║          Formosis 安裝腳本 (Windows)                         ║
 ╚══════════════════════════════════════════════════════════════╝
 
 "@ -ForegroundColor Cyan

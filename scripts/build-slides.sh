@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ============================================================
-# PaperForge — Marp 簡報編譯腳本 (Linux/macOS)
+# Formosis — Marp 簡報編譯腳本 (Linux/macOS)
 # ============================================================
 #
 # 用法：
@@ -175,6 +175,11 @@ case "$FORMAT" in
     pdf)  MARP_ARGS+=("--pdf") ;;
     html) MARP_ARGS+=("--html") ;;
 esac
+
+# --- 新版提醒（scripts/update.py；每天最多連網一次，失敗或離線都不出聲）---
+if command -v python3 &> /dev/null && [[ -f "${SCRIPT_DIR}/update.py" ]]; then
+    python3 "${SCRIPT_DIR}/update.py" check || true
+fi
 
 if [[ "$WATCH" == "true" ]]; then
     MARP_ARGS+=("--watch")

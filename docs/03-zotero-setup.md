@@ -1,6 +1,6 @@
 # 03 — 文獻管理：DOI 自動補、Zotero 同步、Zotero MCP
 
-PaperForge 用 `references.bib` 存放參考文獻，`paper.md` 以 `[@citekey]` 引用。維護這個檔案有三種方式，**由簡到繁、可以逐步升級**：
+Formosis 用 `references.bib` 存放參考文獻，`paper.md` 以 `[@citekey]` 引用。維護這個檔案有三種方式，**由簡到繁、可以逐步升級**：
 
 | 方式 | 需要安裝 | 適合 | 你要做的事 |
 |------|----------|------|------------|
@@ -12,7 +12,7 @@ PaperForge 用 `references.bib` 存放參考文獻，`paper.md` 以 `[@citekey]`
 
 ## 方式 A：只用 DOI（不需 Zotero）
 
-在論文資料夾外、PaperForge 根目錄執行：
+在論文資料夾外、Formosis 根目錄執行：
 
 ```bash
 # Linux/macOS
@@ -43,7 +43,7 @@ vaswani2017attention
 
 ## 方式 B：Zotero 同步
 
-Zotero 是免費開源的文獻管理工具，搭配 Better BibTeX 擴充可產生穩定的 citekey。PaperForge 會在**每次編譯前**自動從 Zotero 拉最新的 `.bib`，不需要在 Zotero 裡設定匯出。
+Zotero 是免費開源的文獻管理工具，搭配 Better BibTeX 擴充可產生穩定的 citekey。Formosis 會在**每次編譯前**自動從 Zotero 拉最新的 `.bib`，不需要在 Zotero 裡設定匯出。
 
 ### Step 1：安裝 Zotero
 
@@ -192,7 +192,7 @@ zotero-collection: "我的碩論"
 
 讓 Claude 直接搜尋、新增、整理你的 Zotero 文獻庫：你說「幫我引用 ResNet 那篇」，Claude 會先查文獻庫裡有沒有，沒有就依 DOI 加進你的 Collection，同步 `.bib` 後寫入 `[@citekey]`。整個過程不必切到 Zotero 視窗。
 
-PaperForge 推薦 [zotero-mcp](https://github.com/54yyyu/zotero-mcp)（MIT 授權、社群最活躍的 Zotero MCP 專案）。它有兩種介面：
+Formosis 推薦 [zotero-mcp](https://github.com/54yyyu/zotero-mcp)（MIT 授權、社群最活躍的 Zotero MCP 專案）。它有兩種介面：
 
 | 介面 | 適合 | 說明 |
 |------|------|------|
@@ -233,7 +233,7 @@ Zotero 會跳出授權對話框，按 **Always Allow**。之後可用 `zotero-mc
 zotero-mcp install-skill --target claude-user
 ```
 
-會在 `~/.claude/skills/zotero-cli/` 放入說明檔（與 PaperForge 各 profile 的 skill 放在同一處），Claude Code 在需要操作文獻庫時會自動讀取。只想對單一論文啟用時，改在論文資料夾執行 `zotero-mcp install-skill --target claude`。
+會在 `~/.claude/skills/zotero-cli/` 放入說明檔（與 Formosis 各 profile 的 skill 放在同一處），Claude Code 在需要操作文獻庫時會自動讀取。只想對單一論文啟用時，改在論文資料夾執行 `zotero-mcp install-skill --target claude`。
 
 ### Step 5：驗證
 

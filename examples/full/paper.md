@@ -110,7 +110,7 @@ header-includes:
 {\Large\bfseries 摘要}
 \end{center}
 
-本論文展示 PaperForge 工作流可支援的完整論文元素，涵蓋前置部分（摘要、目錄、圖目錄、表目錄）、正文章節、單張圖與子圖排版、一般表格與 multirow 跨列表格、單行與多行對齊公式、腳註、跨章節引用，以及 IEEE 格式參考文獻。本範例可作為新使用者建立自己論文骨架的參考；所有圖檔皆為合成示意圖，並非真實實驗數據。
+本論文展示 Formosis 工作流可支援的完整論文元素，涵蓋前置部分（摘要、目錄、圖目錄、表目錄）、正文章節、單張圖與子圖排版、一般表格與 multirow 跨列表格、單行與多行對齊公式、腳註、跨章節引用，以及 IEEE 格式參考文獻。本範例可作為新使用者建立自己論文骨架的參考；所有圖檔皆為合成示意圖，並非真實實驗數據。
 
 \vspace{0.5cm}
 
@@ -122,7 +122,7 @@ header-includes:
 {\Large\bfseries Abstract}
 \end{center}
 
-This thesis demonstrates the full set of features supported by the PaperForge workflow, including front matter (abstract, table of contents, list of figures, list of tables), main chapters, single and sub-figure layouts, plain and multirow tables, single-line and aligned multi-line equations, footnotes, cross-references, and IEEE-style references. This example serves as a reference for new users building their own thesis skeleton; all figures are synthetic illustrations rather than real experimental data.
+This thesis demonstrates the full set of features supported by the Formosis workflow, including front matter (abstract, table of contents, list of figures, list of tables), main chapters, single and sub-figure layouts, plain and multirow tables, single-line and aligned multi-line equations, footnotes, cross-references, and IEEE-style references. This example serves as a reference for new users building their own thesis skeleton; all figures are synthetic illustrations rather than real experimental data.
 
 \vspace{0.5cm}
 
@@ -148,7 +148,7 @@ This thesis demonstrates the full set of features supported by the PaperForge wo
 
 ## 研究背景 {#sec:intro-background}
 
-深度學習在影像辨識領域取得突破性進展。自 Krizhevsky 等人[@krizhevsky2012imagenet]提出 AlexNet 以來，卷積神經網路（Convolutional Neural Network, CNN）成為主流方法。He 等人[@he2016resnet]進一步提出殘差學習（Residual Learning），解決深層網路訓練的退化問題。^[殘差學習的核心是跳接連結（skip connection），讓梯度可直接回傳至淺層，緩解深層網路的梯度消失問題。此處以腳註示範 PaperForge 對腳註的支援。]
+深度學習在影像辨識領域取得突破性進展。自 Krizhevsky 等人[@krizhevsky2012imagenet]提出 AlexNet 以來，卷積神經網路（Convolutional Neural Network, CNN）成為主流方法。He 等人[@he2016resnet]進一步提出殘差學習（Residual Learning），解決深層網路訓練的退化問題。^[殘差學習的核心是跳接連結（skip connection），讓梯度可直接回傳至淺層，緩解深層網路的梯度消失問題。此處以腳註示範 Formosis 對腳註的支援。]
 
 近期，Vaswani 等人[@vaswani2017attention]提出 Transformer 架構，後續 Dosovitskiy 等人[@dosovitskiy2020vit]將其延伸至影像領域，催生了視覺 Transformer（Vision Transformer, ViT）的研究熱潮。
 
@@ -279,7 +279,7 @@ F_1 &= 2 \cdot \frac{\text{Precision} \cdot \text{Recall}}{\text{Precision} + \t
 
 ## 結論 {#sec:conclusion-summary}
 
-本論文系統比較三類深度學習架構，並展示 PaperForge 工作流可完整支援論文常見元素：章節編號、跨章節引用、圖目錄與表目錄、單張圖與子圖、一般表格與 multirow 表格、單行與多行公式、腳註、以及自動參考文獻。
+本論文系統比較三類深度學習架構，並展示 Formosis 工作流可完整支援論文常見元素：章節編號、跨章節引用、圖目錄與表目錄、單張圖與子圖、一般表格與 multirow 表格、單行與多行公式、腳註、以及自動參考文獻。
 
 ## 未來工作 {#sec:conclusion-future}
 

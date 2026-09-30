@@ -1,17 +1,18 @@
-# PaperForge Makefile
+# Formosis Makefile
 # 跨平台編譯入口（Linux/macOS；Windows 請用 scripts/build.ps1 / scripts/build-slides.ps1）
 
 SHELL := /bin/bash
 .PHONY: help build clean distclean watch test test-minimal test-full \
         slides slides-html slides-watch test-slides \
-        list-profiles skill install install-marp check-env cite cite-sync
+        list-profiles skill install install-marp check-env cite cite-sync \
+        new-thesis update
 
 # 預設輸入檔案
 INPUT ?= paper.md
 SLIDES ?= slides.md
 
 help:
-	@echo "PaperForge Make targets:"
+	@echo "Formosis Make targets:"
 	@echo ""
 	@echo "  -- 論文 (Pandoc + XeLaTeX) --"
 	@echo "  make build [INPUT=path/to/paper.md]   編譯論文（預設 paper.md）"
@@ -28,6 +29,9 @@ help:
 	@echo "  make slides-watch [SLIDES=...]            監看模式"
 	@echo "  make test-slides                          編譯 slides-minimal 範例"
 	@echo ""
+	@echo "  -- 開始 --"
+	@echo "  make new-thesis PROFILE=<name> NAME=<資料夾>  建立獨立 git repo 的新論文／簡報"
+	@echo ""
 	@echo "  -- 文獻 --"
 	@echo "  make cite ID=<DOI|arXiv> [INPUT=...]   以 DOI / arXiv ID 加入文獻到 .bib"
 	@echo "  make cite-sync [INPUT=...]            從 Zotero（Better BibTeX）同步 .bib"
@@ -38,6 +42,7 @@ help:
 	@echo "  make install                          執行完整安裝腳本"
 	@echo "  make install-marp                     安裝 marp-cli"
 	@echo "  make check-env                        檢查編譯環境"
+	@echo "  make update                           更新到最新 release（並重裝 skill）"
 	@echo ""
 	@echo "用例："
 	@echo "  make build INPUT=examples/minimal/paper.md"
@@ -78,6 +83,10 @@ slides-watch:
 test-slides:
 	@./scripts/build-slides.sh examples/slides-minimal/slides.md --pdf
 
+# -- 開始 --
+new-thesis:
+	@./scripts/new-thesis.sh $(PROFILE) $(NAME)
+
 # -- 文獻 --
 cite:
 	@python3 scripts/cite.py add $(ID) --md $(INPUT)
@@ -100,3 +109,6 @@ install-marp:
 
 check-env:
 	@bash scripts/check-env.sh
+
+update:
+	@python3 scripts/update.py apply

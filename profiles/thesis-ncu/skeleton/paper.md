@@ -1,5 +1,5 @@
 ---
-profile: thesis-ncu  # PaperForge 編譯時自動套用此 profile（可被 CLI --profile 覆寫）
+profile: thesis-ncu  # Formosis 編譯時自動套用此 profile（可被 CLI --profile 覆寫）
 
 # ============================================================
 # === NCU 論文基本資訊（請替換以下 placeholder） ===
