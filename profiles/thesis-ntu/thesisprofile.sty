@@ -1,0 +1,72 @@
+% ============================================================
+% thesis-ntu — 國立臺灣大學碩、博士學位論文版面
+%
+% 依據：國立臺灣大學碩、博士學位論文格式規範（112.10.20 教務會議通過，
+%       115.2.3 校教字第 1150009478 號函重申）與臺大電子學位論文上傳手冊（2026.1）。
+% 共用版面在 shared/latex/twthesis.sty；這裡只放臺大與共用設定不同之處。
+% 封面（即書名頁）與前置頁順序在 skeleton/paper.md。
+% ============================================================
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{thesisprofile}[2026/09/30 NTU thesis profile]
+
+\RequirePackage[
+  chapnum=zh,          % 第一章（規範附件 4 目次範例）
+  secsep=.,            % 1.1（附件 4：「第一節或 1.1」皆可）
+  eqnum=section,       % 分章編號；條文未規定，下方改為 (1.1) 與節號一致
+  fignum=section,      % 分章編號；條文未規定，下方改為 圖 1.1 與節號一致
+  caplabelsep=space,   % 圖 1.1 標題
+  lofprefix=true,      % 圖次條目：圖 1.1 標題
+  urldate=true,
+]{twthesis}
+
+\newcommand{\ProfileUniversityZh}{國立臺灣大學}
+
+% === 圖表、公式編號用「.」連接，與節號 1.1 一致（條文未規定，採慣例）===
+\renewcommand{\thefigure}{\arabic{section}.\arabic{figure}}
+\renewcommand{\thetable}{\arabic{section}.\arabic{table}}
+\renewcommand{\theequation}{\arabic{section}.\arabic{equation}}
+
+% === 目次、圖次、表次（112.10.20 版重大變更：不再用「目錄、圖目錄、表目錄」）===
+\renewcommand{\contentsname}{目次}
+\renewcommand{\listfigurename}{圖次}
+\renewcommand{\listtablename}{表次}
+
+% === 目次的章條目：「第一章 ○○○……1」（附件 4 目次範例，含點線）===
+% twthesis 的 chapnum=zh 在目次只印「一」；這裡補上「第…章」與點線導引。
+% 未編號條目（誌謝、摘要、參考文獻）不經 \numberline，仍靠左對齊。
+\renewcommand*\l@section[2]{%
+  \addpenalty{-\@highpenalty}%
+  \vskip 0.5em \@plus\p@
+  \begingroup
+  \renewcommand*\numberline[1]{\hb@xt@\@tempdima{第##1章\hfil}}%
+  \@dottedtocline{1}{0em}{4.5em}{#1}{#2}%
+  \endgroup}
+
+% === 插入已簽名的口試委員會審定書 PDF（\includepdf）===
+\RequirePackage{pdfpages}
+
+% === 浮水印位置（上傳手冊第肆章）===
+% 絕對比例 50%、不透明度 50%、「看起來在頁面之下」、距頂部 2.5 cm、距右邊 2.5 cm。
+% 圖檔請用圖書館提供的 watermark.pdf 原檔，比例 50% 才與 Acrobat 設定相同。
+% 不透明度用 TikZ 的 opacity（transparent 套件在 XeLaTeX 實測無效）；
+% Pandoc 預設把圖寬限制在 \linewidth 內，這裡暫改為紙寬，才能以原尺寸的 50% 輸出。
+\RequirePackage{tikz}
+\renewcommand{\TwthesisWatermarkPlace}[1]{%
+  \put(\LenToUnit{\paperwidth-2.5cm},\LenToUnit{\paperheight-2.5cm}){%
+    \makebox(0,0)[rt]{%
+      \setlength{\linewidth}{\paperwidth}\setlength{\textheight}{\paperheight}%
+      \tikz\node[inner sep=0pt, opacity=0.5]{\scalebox{0.5}{\includegraphics{#1}}};}}}
+
+% === DOI（上傳手冊第肆章）===
+% 格式 doi:10.6342/NTU20XXXXXXXX（從提交系統複製，含 doi: 前綴）；12 級、不透明度 100%、
+% 「看起來在頁面之下」、距底部 1 cm、距右邊 1 cm，全文每頁。
+% 在 paper.md 的 header-includes 定義 \ThesisDOI 才輸出。
+\RequirePackage{eso-pic}
+\AtBeginDocument{%
+  \ifdefined\ThesisDOI
+    \AddToShipoutPictureBG{%
+      \put(\LenToUnit{\paperwidth-1cm},\LenToUnit{1cm}){%
+        \makebox(0,0)[rb]{\normalfont\fontsize{12pt}{14pt}\selectfont\ThesisDOI}}}%
+  \fi}
+
+\endinput

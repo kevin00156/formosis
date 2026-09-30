@@ -1,0 +1,33 @@
+name: thesis-ntu
+type: thesis
+style: ntu
+description: 國立臺灣大學（National Taiwan University）碩、博士學位論文格式。
+# 格式來源：規範的出處與可信度，新增或修改 profile 時務必填寫。
+# status: verified = 已對照校方正式規範；derived = 依實際論文／系所範本推得，未對照校方條文
+source:
+  status: verified
+  basis: >-
+    國立臺灣大學碩、博士學位論文格式規範（112.10.20 第 112 學年度第 1 學期第 1 次教務會議通過；
+    115.2.3 校教字第 1150009478 號函重申並附補充說明）；臺大電子學位論文上傳手冊（2026.1）
+  url: https://www.lib.ntu.edu.tw/doc/cl/THESISSAMPLE.pdf
+  version: "112.10.20"
+  note: >-
+    紙張、邊界（上 3／下 2／左右 3 cm）、12 級字、頁碼置中、封面與書名頁逐行字級、
+    「目次、圖次、表次」名稱與前置頁順序依條文。條文規定中文 1.5 倍、英文雙行間距，
+    LaTeX 無法同段依文字切換，skeleton 預設 1.5，英文撰寫的論文請改 linestretch: 2。
+    條文未規定而採慣例值：章「第一章」、節 1.1、圖表與公式分章編號（圖 1.1、(1.1)）、
+    圖題在圖下／表題在表上、標題字級、參考文獻樣式（預設 IEEE，系所另有規定從之）。
+    電子檔只放一頁封面（不含側邊），skeleton 的封面即書名頁；紙本外封面與書背由使用者另行印製。
+    浮水印與 DOI 須由學生自行加入（全文含封面）：浮水印圖檔自臺大圖書館下載
+    （https://www.lib.ntu.edu.tw/doc/CL/watermark.pdf，勿放進 repo），在 paper.md YAML 設
+    watermark:，本 profile 依上傳手冊置於距頂 2.5 cm、距右 2.5 cm、比例 50%、不透明度 50%；
+    DOI 在 header-includes 定義 \ThesisDOI，輸出於距底 1 cm、距右 1 cm、12 級。
+    PDF 保全（限制編輯）仍須以 Acrobat 等工具另行設定。
+language: zh-TW
+template: ../../shared/latex/thesis.latex   # 共用模板；學校差異在 thesisprofile.sty
+skeleton: skeleton/
+skill: skill/SKILL.md
+defaults:
+  bib-style: ieee
+  pdf-engine: xelatex
+  csl: shared/cites/ieee.csl
