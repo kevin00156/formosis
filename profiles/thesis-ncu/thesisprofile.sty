@@ -1,0 +1,20 @@
+% ============================================================
+% thesis-ncu — 國立中央大學學位論文版面
+%
+% 共用版面在 shared/latex/twthesis.sty；這裡只放中央大學與共用設定不同之處。
+% 封面、書名頁與前置頁順序在 skeleton/paper.md。
+% ============================================================
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{thesisprofile}[2026/09/30 NCU thesis profile]
+
+\RequirePackage[
+  chapnum=arabic,      % 第1章
+  eqnum=section,       % (1-1)
+  caplabelsep=space,   % 圖1 標題
+  lofprefix=true,      % 圖目錄條目：圖 1 標題
+  urldate=false,       % 口試委員回饋「visited on」瀏覽日期多餘，不印
+]{twthesis}
+
+\newcommand{\ProfileUniversityZh}{國立中央大學}
+
+\endinput

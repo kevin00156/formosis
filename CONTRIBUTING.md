@@ -81,7 +81,7 @@ docs: 補充 Zotero Better BibTeX 截圖
 歡迎 PR 新增 profile：
 
 1. `cp -r profiles/thesis-ncu profiles/<type>-<style>`（命名 `<type>-<style>`，例 `thesis-ntu`、`journal-ieee`）
-2. 修改 `profile.yaml`、`template.latex`、`skeleton/`、`skill/SKILL.md`
+2. 修改 `profile.yaml`、`thesisprofile.sty`（論文類；其他類為 `template.latex`）、`skeleton/`、`skill/SKILL.md`
 3. 在 `docs/` 補充該 profile 的格式說明（如有必要）
 4. 確保 `./scripts/build.sh --profile <name> profiles/<name>/skeleton/paper.md` 能編譯通過
 

@@ -42,7 +42,7 @@ secnumdepth: 4
 toc: false
 
 # 章節格式、圖表標題、頁碼、超連結等 LaTeX 設定皆由 profile thesis-ncu 的
-# template.latex 提供，使用者複製後不需在此重抄；本範例僅保留資料欄位。
+# thesisprofile.sty（與共用的 twthesis.sty）提供，使用者複製後不需在此重抄；本範例僅保留資料欄位。
 ---
 
 <!-- ============================================================ -->

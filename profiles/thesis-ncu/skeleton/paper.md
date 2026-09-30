@@ -55,7 +55,7 @@ toc: false                        # 手動插入 \tableofcontents
 # ============================================================
 # === 自訂 LaTeX 設定 ===
 # 大部分章節格式、頁碼、超連結、圖表編號等已由 profile thesis-ncu 的
-# template.latex 提供，無需在此重抄。如需 override 或新增實驗數據變數，
+# thesisprofile.sty（與共用的 twthesis.sty）提供，無需在此重抄。如需 override 或新增實驗數據變數，
 # 可加 header-includes 區塊（會 append 在 profile 預設之後）：
 #
 # header-includes:

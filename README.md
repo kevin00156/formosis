@@ -148,7 +148,7 @@ paperforge/
 │   ├── README.md
 │   ├── thesis-ncu/          # 國立中央大學學位論文 profile（type: thesis）
 │   │   ├── profile.yaml     # 元資料：name, type, style, defaults
-│   │   ├── template.latex   # Pandoc LaTeX 模板
+│   │   ├── thesisprofile.sty # 學校版面差異（共用模板在 shared/latex/）
 │   │   ├── skeleton/        # 骨架（cp -r 出去當你的論文/報告起點）
 │   │   │   ├── paper.md
 │   │   │   ├── references.bib
@@ -168,7 +168,8 @@ paperforge/
 │       └── skill/
 │           └── SKILL.md     # NCU 口試簡報撰寫 skill
 ├── shared/                  # 跨 profile 共用資源
-│   └── cites/ieee.csl       # IEEE 引用樣式
+│   ├── cites/ieee.csl       # IEEE 引用樣式
+│   └── latex/               # 學位論文共用 Pandoc 模板（thesis.latex）與版面（twthesis.sty）
 ├── scripts/                 # 框架腳本（編譯、安裝、健檢）
 │   ├── build.{ps1,sh}       # 論文編譯（接受 --profile <name>）
 │   ├── build-slides.{ps1,sh}# 簡報編譯（接受 --profile <name>）

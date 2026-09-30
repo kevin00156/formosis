@@ -12,7 +12,7 @@ PaperForge 是「Markdown → 格式精準 PDF」的鍛造工具鏈本身的開�
 - profile 例：`thesis-ncu`、`journal-ieee`（未來）、`report-gov-tw`（未來）
 - 每個 profile 含：
   - `profile.yaml`：元資料（name、type、style、defaults）
-  - `template.latex`：Pandoc LaTeX 模板
+  - `thesisprofile.sty`（論文類）：學校版面差異，共用的 Pandoc 模板與版面在 `shared/latex/thesis.latex`、`shared/latex/twthesis.sty`；非論文類仍為各自的 `template.latex`
   - `skeleton/`：使用者 `cp -r` 當論文／報告起點的骨架
   - `skill/SKILL.md`：Claude Code Skill 撰寫規範
 - 編譯：`build.{ps1,sh}` — profile 套用優先序為 **CLI 旗標 `--profile <name>` > 輸入檔 YAML frontmatter 的 `profile:` 欄位 > 預設 `thesis-ncu`**
@@ -284,6 +284,7 @@ Dockerfile 在 [`docker/`](docker/)，詳細說明見 [`docker/README.md`](docke
 ## 不要做的事
 
 - 不要 commit `*.pdf`、`*.tex`、`paper.tex` 等編譯產物（已在 `.gitignore`）
-- 不要動 `profiles/thesis-ncu/template.latex` 的 `\Spaced` 巨集，那是封面字距加寬的核心
+- 不要動 `shared/latex/twthesis.sty` 的 `\Spaced` 巨集，那是封面字距加寬的核心
+- 改 `shared/latex/twthesis.sty` 或 `shared/latex/thesis.latex` 會影響所有學校：改完要編譯每個 thesis profile 的 skeleton 並比對改動前後的 PDF
 - 不要把使用者個資（姓名、學號、實際論文題目）寫進 `profiles/*/skeleton/` 或 `examples/`
 - 不要在 `.ps1` 檔案使用全形引號「」，PowerShell 解析會出錯
