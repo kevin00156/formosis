@@ -17,23 +17,31 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends \
-            pandoc \
-            texlive-xetex \
-            texlive-lang-cjk \
-            texlive-fonts-recommended \
-            texlive-bibtex-extra \
-            biber \
-            fonts-noto-cjk
+      # 與 build.yml 共用 docker/paper.Dockerfile 與 GHA cache：套件清單只有一份真相來源
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
+      - name: Build paper image (local, no registry)
+        uses: docker/build-push-action@v6
+        with:
+          context: docker
+          file: docker/paper.Dockerfile
+          load: true
+          tags: formosis-paper:ci
+          cache-from: type=gha,scope=formosis-paper
+          cache-to: type=gha,mode=max,scope=formosis-paper
+
+      # 標楷體／Times New Roman 為專有字體，runner 上以免費替身編譯（同 build.yml）
       - name: Build example PDFs
+        env:
+          CI_MAIN_FONT: "Latin Modern Roman"
+          CI_CJK_FONT: "AR PL UKai TW"
         run: |
           chmod +x scripts/build.sh
-          ./scripts/build.sh examples/minimal/paper.md
-          ./scripts/build.sh examples/full/paper.md
+          for md in examples/minimal/paper.md examples/full/paper.md; do
+            docker run --rm -v "$PWD":/workspace -w /workspace formosis-paper:ci \
+              ./scripts/build.sh "$md" --main-font "$CI_MAIN_FONT" --cjk-font "$CI_CJK_FONT"
+          done
 
       - name: Create release archive
         run: |
