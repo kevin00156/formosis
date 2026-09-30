@@ -443,6 +443,6 @@ for _y in "$_repo_root"/profiles/*/profile.yaml; do
 done
 echo "     （完整清單與細節：./scripts/build.sh --list-profiles）"
 echo "  2. 編輯 my-work/paper.md（簡報為 slides.md）的 YAML metadata"
-echo "  3. 設置 Zotero：見 docs/03-zotero-setup.md"
+echo "  3. 設定文獻管理（DOI 自動補／Zotero 同步／Zotero MCP）：見 docs/03-zotero-setup.md"
 echo "  4. 編譯：./scripts/build.sh my-work/paper.md --profile <name>"
 echo "       （簡報改用 ./scripts/build-slides.sh my-work/slides.md --profile <name>）"

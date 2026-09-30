@@ -23,17 +23,20 @@
 
 ## 文獻管理
 
-新增或引用文獻時依下列優先序處理，**絕不憑記憶捏造 BibTeX 條目或 citekey**（以下 `python3` 在 Windows 上改用 `python`）：
+新增或引用文獻一律遵守（以下 `python3` 在 Windows 上改用 `python`）：
 
-1. **有 Zotero MCP 工具可用時**（工具名稱含 `zotero`）：
-   - 先在文獻庫搜尋是否已有該文獻；有的話取其 Better BibTeX citekey 直接引用
-   - 沒有的話依 DOI / arXiv ID / ISBN 新增到 `paper.md` YAML `zotero-collection:` 指定的 collection
-   - 新增後執行 `python3 ../scripts/cite.py sync paper.md` 把 `references.bib` 拉回（編譯時也會自動同步）
-2. **沒有 Zotero MCP**：
-   - YAML 有 `zotero-collection:`：`references.bib` 由 Zotero 管理，不可直接修改；請使用者用 Zotero Connector 抓取後執行 `cite.py sync`
-   - YAML 沒有 `zotero-collection:`：執行 `python3 ../scripts/cite.py add <DOI 或 arXiv ID> --md paper.md`，stdout 印出的 citekey 即可寫成 `[@key]`
-3. **只有標題、沒有 DOI**：先上網查出 DOI，確認標題、作者、年份都相符再走 1 或 2；查不到 DOI 的文獻（多數中文期刊、學位論文）請使用者用 Zotero Connector 抓取
-4. 加完引用後編譯，lint 會檢查每個 `[@key]` 都存在於 `references.bib`
+1. **絕不憑記憶捏造 BibTeX 條目或 citekey**，也不要手動編輯 `references.bib`
+2. 先在 `references.bib` 找是否已有該文獻（比對 DOI 或標題）；有就直接用它的 citekey
+3. 沒有的話，用 DOI 或 arXiv ID 加入：
+
+   ```bash
+   python3 ../scripts/cite.py add <DOI 或 arXiv ID> --md paper.md
+   ```
+
+   stdout 印出的就是 citekey，寫成 `[@key]`。同一指令會自動判斷：YAML 有 `zotero-collection:` 且裝了 `zotero-cli` 時加進使用者的 Zotero 文獻庫，否則直接寫入 `references.bib`
+4. **只有標題、沒有 DOI**：先上網查出 DOI，確認標題、作者、年份都相符再執行步驟 3；若有 `zotero-cli` 也可用 `zotero-cli --json search <關鍵字>` 查使用者的文獻庫
+5. 查不到 DOI 的文獻（多數中文期刊、臺灣學位論文、書籍）：請使用者用 Zotero Connector 抓取，再執行 `python3 ../scripts/cite.py sync paper.md`
+6. `cite.py add` 回報錯誤時，把錯誤訊息轉告使用者，不要改用手寫條目繞過
 
 ## 開始撰寫
 

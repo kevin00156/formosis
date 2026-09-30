@@ -190,7 +190,78 @@ zotero-collection: "我的碩論"
 
 ## 方式 C：讓 Claude 直接操作文獻庫（Zotero MCP）
 
-<!-- MCP-SECTION -->
+讓 Claude 直接搜尋、新增、整理你的 Zotero 文獻庫：你說「幫我引用 ResNet 那篇」，Claude 會先查文獻庫裡有沒有，沒有就依 DOI 加進你的 Collection，同步 `.bib` 後寫入 `[@citekey]`。整個過程不必切到 Zotero 視窗。
+
+PaperForge 推薦 [zotero-mcp](https://github.com/54yyyu/zotero-mcp)（MIT 授權、社群最活躍的 Zotero MCP 專案）。它有兩種介面：
+
+| 介面 | 適合 | 說明 |
+|------|------|------|
+| **`zotero-cli` + skill**（推薦） | Claude Code | Claude 用命令列操作 Zotero，只在需要時載入說明，幾乎不佔 context |
+| MCP server | Claude Desktop 等沒有終端機的 AI 工具 | 約 40 個工具常駐，每次對話都佔用約 13k token |
+
+### 前置條件
+
+- 完成方式 B（Zotero + Better BibTeX，且 `paper.md` 已設定 `zotero-collection:`）
+- **Zotero 10 以上**（Zotero 10 起本機 API 才能寫入；更舊的版本只能透過雲端 Web API 寫入，見下方 FAQ）
+- `uv`（`scripts/install.*` 已經幫你裝好；用 `uv --version` 確認）
+
+### Step 1：開啟 Zotero 本機 API
+
+Zotero → `Settings`（macOS 為 `Preferences`）→ `Advanced` → 勾選 **Allow other applications on this computer to communicate with Zotero**。
+
+### Step 2：安裝 zotero-mcp
+
+```bash
+uv tool install zotero-mcp-server
+```
+
+> ⚠️ 套件名是 **`zotero-mcp-server`**。PyPI 上的 `zotero-mcp` 是另一個只能讀取的專案，不要裝錯。
+
+### Step 3：授權寫入（一次性）
+
+Zotero 開著的狀態下執行：
+
+```bash
+zotero-mcp authorize-local
+```
+
+Zotero 會跳出授權對話框，按 **Always Allow**。之後可用 `zotero-mcp authorize-local --status` 確認狀態。
+
+### Step 4：讓 Claude 知道怎麼用
+
+```bash
+zotero-mcp install-skill --target claude-user
+```
+
+會在 `~/.claude/skills/zotero-cli/` 放入說明檔（與 PaperForge 各 profile 的 skill 放在同一處），Claude Code 在需要操作文獻庫時會自動讀取。只想對單一論文啟用時，改在論文資料夾執行 `zotero-mcp install-skill --target claude`。
+
+### Step 5：驗證
+
+```bash
+zotero-cli config                       # 應該印出 Zotero 設定，而不是錯誤
+python3 ../scripts/cite.py add 10.1109/CVPR.2016.90 --md paper.md
+```
+
+第二行指令偵測到 `zotero-collection:` 與 `zotero-cli` 後，會把論文加進你的 Zotero Collection，接著從 Better BibTeX 同步 `.bib`，最後印出 **Better BibTeX 產生的 citekey**。到 Zotero 裡應該能看到這篇論文。
+
+> 💡 **不論用哪種方式，Claude 都只需要記一個指令 `cite.py add`**：沒設 Zotero 時寫進 `.bib`（方式 A），有 Zotero 與 zotero-cli 時加進文獻庫（方式 C）。各 profile 的 `CLAUDE.md` 已寫好這條規則。Zotero MCP / zotero-cli 另外提供搜尋文獻庫、讀 PDF 全文與註記等功能，Claude 會在你要求時使用。
+
+### 替代：MCP server 設定
+
+如果你用的是 Claude Desktop 這類沒有終端機的工具，改用 MCP server：
+
+```bash
+# Claude Code（僅限此論文專案）
+claude mcp add zotero --scope project -e ZOTERO_LOCAL=true -- zotero-mcp serve
+```
+
+其他工具的設定可執行 `zotero-mcp setup-info` 查詢。
+
+### 方式 C 常見問題
+
+- **Zotero 9 以下能用嗎？** 讀取可以；寫入需要 Zotero 雲端的 API key：到 <https://www.zotero.org/settings/keys> 建立有寫入權限的 key，再執行 `zotero-mcp setup --no-local --api-key <KEY> --library-id <你的 userID>`。此時新增的條目會先進雲端，Zotero 桌面版同步後 Better BibTeX 才拿得到。建議直接升級到 Zotero 10。
+- **`cite.py add` 說「已加入 Zotero，但找不到對應條目」**：Better BibTeX 產生 citekey 需要一點時間，稍等幾秒後執行 `cite.py sync paper.md`，再查 `references.bib`。
+- **群組文獻庫（`zotero-library:` 不是 1）**：zotero-cli 預設操作個人文獻庫，群組文獻庫請用 Zotero Connector 新增。
 
 ## 進階：路徑包含中文
 

@@ -6,6 +6,8 @@
 from __future__ import annotations
 
 import io
+import json
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -49,13 +51,14 @@ class NormalizeIdTest(unittest.TestCase):
     def test_doi_forms(self):
         for raw in ("10.1109/CVPR.2016.90", "doi:10.1109/CVPR.2016.90",
                     "https://doi.org/10.1109/CVPR.2016.90", "https://dx.doi.org/10.1109/CVPR.2016.90."):
-            self.assertEqual(cite.normalize_id(raw), "10.1109/CVPR.2016.90", raw)
+            self.assertEqual(cite.normalize_id(raw), ("doi", "10.1109/CVPR.2016.90"), raw)
 
     def test_arxiv_forms(self):
         for raw in ("1706.03762", "arXiv:1706.03762v5", "https://arxiv.org/abs/1706.03762",
-                    "https://arxiv.org/pdf/1706.03762v2.pdf"):
-            self.assertEqual(cite.normalize_id(raw), "10.48550/arXiv.1706.03762", raw)
-        self.assertEqual(cite.normalize_id("hep-th/9901001"), "10.48550/arXiv.hep-th/9901001")
+                    "https://arxiv.org/pdf/1706.03762v2.pdf", "10.48550/arXiv.1706.03762"):
+            self.assertEqual(cite.normalize_id(raw), ("arxiv", "1706.03762"), raw)
+        self.assertEqual(cite.normalize_id("hep-th/9901001"), ("arxiv", "hep-th/9901001"))
+        self.assertEqual(cite.canonical_doi("arxiv", "1706.03762"), "10.48550/arXiv.1706.03762")
 
     def test_unrecognized(self):
         with self.assertRaises(cite.CiteError):
@@ -99,10 +102,12 @@ class AddCommandTest(unittest.TestCase):
         self.addCleanup(self.tmp.cleanup)
 
     def run_add(self, ids, md=None, bib=None):
-        responses = {"10.1109/CVPR.2016.90": CROSSREF_RESNET,
-                     "10.48550/arXiv.1706.03762": DATACITE_ATTENTION}
+        responses = {("doi", "10.1109/CVPR.2016.90"): CROSSREF_RESNET,
+                     ("arxiv", "1706.03762"): DATACITE_ATTENTION}
         out = io.StringIO()
-        with mock.patch.object(cite, "fetch_bibtex", side_effect=lambda d: responses[d]), \
+        fetch = lambda k, v: cite.parse_entry(responses[(k, v)])  # noqa: E731
+        with mock.patch.object(cite, "fetch_entry", side_effect=fetch), \
+                mock.patch("shutil.which", return_value=None), \
                 mock.patch("sys.stdout", out), mock.patch("sys.stderr", io.StringIO()):
             code = cite.cmd_add(ids, md, bib, as_json=False)
         return code, out.getvalue().split()
@@ -171,7 +176,7 @@ class SyncCommandTest(unittest.TestCase):
         code, opener = self.run_sync('zotero-collection: "碩論/第二章"', DATACITE_ATTENTION)
         self.assertEqual(code, 0)
         url = opener.open.call_args[0][0]
-        self.assertEqual(url, "http://127.0.0.1:23119/better-bibtex/export/collection?/1/"
+        self.assertEqual(url, "http://127.0.0.1:23119/better-bibtex/collection?/1/"
                               "%E7%A2%A9%E8%AB%96/%E7%AC%AC%E4%BA%8C%E7%AB%A0.bibtex")
         self.assertEqual(self.bib.read_text(encoding="utf-8"), DATACITE_ATTENTION)
 
@@ -184,6 +189,93 @@ class SyncCommandTest(unittest.TestCase):
         code, _ = self.run_sync("zotero-collection: 碩論", "")
         self.assertEqual(code, 0)
         self.assertEqual(self.bib.read_text(encoding="utf-8"), "@misc{keep,\n}\n")
+
+
+class FetchFallbackTest(unittest.TestCase):
+    CSL = {"type": "article-journal", "title": "臺灣 & 深度學習", "DOI": "10.6342/X",
+           "author": [{"family": "王", "given": "小明"}, {"literal": "某研究團隊"}],
+           "container-title": ["臺灣期刊"], "issued": {"date-parts": [[2021, 5]]},
+           "volume": "3", "issue": "2", "page": "1-10"}
+
+    def test_csl_json_fallback(self):
+        calls = []
+
+        def fake_get(url, accept):
+            calls.append(accept)
+            if "x-bibtex" in accept:
+                raise urllib.error.HTTPError(url, 406, "Not Acceptable", {}, None)
+            return json.dumps(self.CSL)
+
+        with mock.patch.object(cite, "http_get", side_effect=fake_get):
+            e = cite.fetch_doi("10.6342/X")
+        self.assertEqual(len(calls), 2)
+        cite.tidy_fields(e)
+        self.assertEqual(e.etype, "article")
+        self.assertIn(("title", r"{臺灣 \& 深度學習}"), e.fields)
+        self.assertEqual(e.get("author"), "王, 小明 and 某研究團隊")
+        self.assertEqual(e.get("journal"), "臺灣期刊")
+        self.assertEqual((e.get("year"), e.get("number"), e.get("doi")), ("2021", "2", "10.6342/X"))
+
+    def test_arxiv_prefers_arxiv_bibtex(self):
+        arxiv_bib = ("@misc{vaswani2017attention,\n  title={Attention Is All You Need},\n"
+                     "  author={Ashish Vaswani},\n  year={2017},\n  eprint={1706.03762},\n}")
+        with mock.patch.object(cite, "http_get", return_value=arxiv_bib) as get:
+            e = cite.fetch_entry("arxiv", "1706.03762")
+        self.assertEqual(get.call_args[0][0], "https://arxiv.org/bibtex/1706.03762")
+        self.assertEqual(e.get("eprint"), "1706.03762")
+
+    def test_arxiv_falls_back_to_datacite(self):
+        def fake_get(url, accept):
+            if "arxiv.org" in url:
+                raise urllib.error.URLError("down")
+            return DATACITE_ATTENTION
+        with mock.patch.object(cite, "http_get", side_effect=fake_get):
+            e = cite.fetch_entry("arxiv", "1706.03762")
+        self.assertEqual(e.get("title"), "Attention Is All You Need")
+
+    def test_eprint_counts_as_arxiv_doi(self):
+        _, dois = cite.existing_index("@article{v17,\n  eprint = {1706.03762v5},\n}\n")
+        self.assertEqual(dois, {"10.48550/arxiv.1706.03762": "v17"})
+
+
+class ZoteroCliTest(unittest.TestCase):
+    """方式 C：frontmatter 有 zotero-collection 且裝了 zotero-cli 時，add 改加進 Zotero。"""
+
+    BBT_EXPORT = "@inproceedings{heDeepResidualLearning2016,\n  doi = {10.1109/CVPR.2016.90},\n}\n"
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.dir = Path(self.tmp.name)
+        self.addCleanup(self.tmp.cleanup)
+        self.md = self.dir / "paper.md"
+        self.md.write_text('---\nzotero-collection: "碩論"\n---\n', encoding="utf-8")
+
+    def run_add(self, cli_stdout, bbt_body):
+        proc = subprocess.CompletedProcess([], 0, stdout=cli_stdout, stderr="")
+        opener = mock.Mock()
+        opener.open.side_effect = lambda *a, **k: FakeResponse(bbt_body.encode("utf-8"))
+        out = io.StringIO()
+        with mock.patch("shutil.which", return_value="/usr/bin/zotero-cli"), \
+                mock.patch("subprocess.run", return_value=proc) as run, \
+                mock.patch("urllib.request.build_opener", return_value=opener), \
+                mock.patch.object(cite, "ZOTERO_KEY_WAIT_S", 0), \
+                mock.patch("sys.stdout", out), mock.patch("sys.stderr", io.StringIO()):
+            code = cite.cmd_add(["https://doi.org/10.1109/CVPR.2016.90"], self.md, None, as_json=False)
+        return code, out.getvalue().split(), run
+
+    def test_adds_to_zotero_and_returns_bbt_key(self):
+        ok = '{"ok": true, "command": "add doi", "schema": 1, "data": {"text": "added"}}'
+        code, keys, run = self.run_add(ok, self.BBT_EXPORT)
+        self.assertEqual((code, keys), (0, ["heDeepResidualLearning2016"]))
+        cmd = run.call_args[0][0]
+        self.assertEqual(cmd[:5], ["/usr/bin/zotero-cli", "--json", "add", "doi", "10.1109/CVPR.2016.90"])
+        self.assertIn("碩論", cmd)
+        self.assertEqual((self.dir / "references.bib").read_text(encoding="utf-8"), self.BBT_EXPORT)
+
+    def test_cli_failure_reported(self):
+        bad = '{"ok": false, "command": "add doi", "schema": 1, "error": {"message": "write denied"}}'
+        code, keys, _ = self.run_add(bad, self.BBT_EXPORT)
+        self.assertEqual((code, keys), (1, []))
 
 
 if __name__ == "__main__":
