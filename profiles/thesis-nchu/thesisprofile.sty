@@ -1,0 +1,81 @@
+% ============================================================
+% thesis-nchu — 國立中興大學學位論文版面
+%
+% 共用版面在 shared/latex/twthesis.sty；這裡只放中興大學與共用設定不同之處。
+% 封面、書名頁與前置頁順序在 skeleton/paper.md。
+%
+% 依據：國立中興大學學位論文格式規範（教務處表單 F2-65，111.4.21）。
+% 下方註解的條號指 F2-65「貳」。
+% ============================================================
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{thesisprofile}[2026/09/30 NCHU thesis profile]
+
+\RequirePackage[
+  chapnum=zhenum,      % 章「一、」（二(一)2；西式見檔尾）
+  secsep=.,            % 節 1.1
+  eqnum=continuous,    % (1)、(2)：條文未規定，與圖表同採全文連續
+  fignum=continuous,   % 表1、圖1，表與圖各自連續編號（二(二)1）
+  caplabelsep=space,   % 表1 標題
+  lofprefix=true,      % 表目次條目：表 1 標題
+  urldate=true,
+]{twthesis}
+
+\newcommand{\ProfileUniversityZh}{國立中興大學}
+
+% === 目次名稱：目次、表目次、圖目次（壹、一(十)(十一)）===
+\renewcommand{\contentsname}{目次}
+\renewcommand{\listtablename}{表目次}
+\renewcommand{\listfigurename}{圖目次}
+
+% === 段落間不加額外空白 ===
+% Pandoc 模板未設 indent 時會載入 parskip（段落間加半行），會吃掉「每頁至少 32 行」（二(一)4）。
+\AtBeginDocument{\setlength{\parskip}{0pt}}
+
+% 節以下編號後綴與目次章號後綴；西式編號時改成「.」（見檔尾）
+\newcommand{\nchu@numsuffix}{}
+\newcommand{\nchu@chaptocsuffix}{、}
+
+% === 章：每章另起新頁，章名置於版面頂端中央，下留雙倍行距（二(一)1、4）===
+% 字級條文未規定，依圖書館 Word 範本 Heading 1（16pt 置中）。
+% 誌謝、摘要、目次、參考書目等以 \section* 產生，一併套用。
+\pretocmd{\section}{\clearpage}{}{%
+  \PackageWarning{thesisprofile}{無法修補 \string\section：章不會自動換頁}}
+\titleformat{\section}
+  {\centering\fontsize{16pt}{19.2pt}\selectfont\bfseries}
+  {\twthesis@chaplabel}{1em}{}   % 章號與標題間空一格（二(一)2）
+\titlespacing*{\section}{0pt}{0pt}{\baselineskip}
+
+% === 節：不另起新頁，仍須居中排列；章節名稱下留雙倍行距（二(一)1、4）===
+\titleformat{\subsection}
+  {\centering\fontsize{14pt}{16.8pt}\selectfont\bfseries}
+  {\thesubsection\nchu@numsuffix}{1em}{}
+\titlespacing*{\subsection}{0pt}{\baselineskip}{\baselineskip}
+\titleformat{\subsubsection}
+  {\normalsize\bfseries}
+  {\thesubsubsection\nchu@numsuffix}{1em}{}
+\titlespacing*{\subsubsection}{0pt}{0.5\baselineskip}{0pt}
+\titleformat{\paragraph}
+  {\normalsize\bfseries}
+  {\theparagraph\nchu@numsuffix}{1em}{}
+\titlespacing*{\paragraph}{0pt}{0.5\baselineskip}{0pt}
+
+% === 目次的章條目：「一、緒論 ......... 1」，頁次右邊對齊（壹、一(十)）===
+% article 預設章條目的章號盒寬 1.5em，放不下「一、」。
+\renewcommand*\l@section[2]{%
+  \begingroup
+  \renewcommand*\numberline[1]{##1\nchu@chaptocsuffix\hspace{1em}}%
+  \@dottedtocline{1}{0em}{0em}{#1}{#2}%
+  \endgroup}
+
+% === 表號與標題在表上方、圖號與標題在圖下方，皆居中（二(二)2、3）===
+\captionsetup[table]{position=top}
+
+% === 西式編號（二(一)3：1. ／1.1. ／1.1.1. ／1.1.1.1.）===
+% 系所要求西式時：把上方選項 chapnum=zhenum 改成 chapnum=arabic，並取消下列註解。
+% \renewcommand{\twthesis@chaplabel}{\thesection.}
+% \renewcommand{\nchu@numsuffix}{.}
+% \renewcommand{\nchu@chaptocsuffix}{.}
+% \let\nchu@numberline\numberline
+% \renewcommand*\numberline[1]{\nchu@numberline{#1\nchu@numsuffix}}
+
+\endinput
