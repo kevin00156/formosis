@@ -24,7 +24,7 @@ CROSSREF_RESNET = (
     "url={http://dx.doi.org/10.1109/CVPR.2016.90}, DOI={10.1109/cvpr.2016.90}, "
     "booktitle={2016 IEEE Conference on Computer Vision and Pattern Recognition (CVPR)}, "
     "publisher={IEEE}, author={He, Kaiming and Zhang, Xiangyu and Ren, Shaoqing and Sun, Jian}, "
-    "year={2016}, month=jun, pages={770–778} }\n"
+    "year={2016}, month=June, pages={770–778} }\n"
 )
 
 # DataCite（arXiv DOI）回傳的格式：多行、作者為「名 姓」
@@ -70,8 +70,8 @@ class ParseAndKeyTest(unittest.TestCase):
         e = cite.parse_entry(CROSSREF_RESNET)
         self.assertEqual(e.etype, "inproceedings")
         self.assertEqual(e.get("doi"), "10.1109/cvpr.2016.90")
-        self.assertEqual(e.get("month"), "jun")
         cite.tidy_fields(e)
+        self.assertIn(("month", "jun"), e.fields)  # Crossref 的 month=June 轉成巨集
         self.assertEqual(e.get("pages"), "770--778")
         self.assertIsNone(e.get("url"))  # 只是 doi 連結，捨去
         self.assertEqual(cite.make_citekey(e, set()), "he2016deep")
@@ -232,6 +232,30 @@ class FetchFallbackTest(unittest.TestCase):
         with mock.patch.object(cite, "http_get", side_effect=fake_get):
             e = cite.fetch_entry("arxiv", "1706.03762")
         self.assertEqual(e.get("title"), "Attention Is All You Need")
+
+    def test_arxiv_year_is_first_submission(self):
+        arxiv_bib = ("@misc{vaswani2023attentionneed,\n  title={Attention Is All You Need},\n"
+                     "  author={Ashish Vaswani},\n  year={2023},\n  eprint={1706.03762},\n}")
+        with mock.patch.object(cite, "http_get", return_value=arxiv_bib):
+            e = cite.fetch_entry("arxiv", "1706.03762")
+        self.assertEqual(e.get("year"), "2017")
+        self.assertEqual(cite.arxiv_year("hep-th/9901001"), "1999")
+        self.assertEqual(cite.arxiv_year("0704.0001"), "2007")
+
+    def test_tidy_month_and_doi_url(self):
+        e = cite.parse_entry("@misc{x, month=June, doi={https://doi.org/10.1143/PTP.101.1155}}")
+        cite.tidy_fields(e)
+        self.assertIn(("month", "jun"), e.fields)
+        self.assertEqual(e.get("doi"), "10.1143/PTP.101.1155")
+
+    def test_airiti_thesis(self):
+        csl = {"type": "dissertation-thesis", "title": "勞動檢查制度",
+               "author": [{"literal": "周紫陵(Tzu-Ling Chou)"}], "publisher": "國立台灣大學學位論文",
+               "issued": {"date-parts": [["2021", "1", "1"]]}, "URL": "", "DOI": "10.6342/NTU202100001"}
+        e = cite.csl_to_entry(csl)
+        self.assertEqual(e.etype, "thesis")
+        self.assertEqual(e.get("institution"), "國立台灣大學")
+        self.assertIsNone(e.get("publisher"))
 
     def test_eprint_counts_as_arxiv_doi(self):
         _, dois = cite.existing_index("@article{v17,\n  eprint = {1706.03762v5},\n}\n")

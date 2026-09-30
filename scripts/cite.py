@@ -59,7 +59,11 @@ TITLE_STOPWORDS = {
 CSL_TYPES = {
     "article-journal": "article", "article": "article", "paper-conference": "inproceedings",
     "book": "book", "chapter": "incollection", "thesis": "thesis", "report": "report",
+    "dissertation-thesis": "thesis",  # 華藝（Airiti）的非標準 type
 }
+
+# BibTeX 內建的月份巨集；來源給 month=June 這類裸字時 biber 不認得
+MONTHS = ("jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec")
 
 # 這些欄位是文字，裸 & % # 會讓 LaTeX 出錯；doi / url 是 verbatim 欄位，不可跳脫
 TEXT_FIELDS = {"title", "journal", "booktitle", "publisher", "institution", "school", "series"}
@@ -140,6 +144,9 @@ class BibEntry:
             if k == name:
                 return strip_value(v)
         return None
+
+    def set(self, name: str, value: str) -> None:
+        self.fields = [(k, v) for k, v in self.fields if k != name] + [(name, value)]
 
     def render(self) -> str:
         lines = [f"@{self.etype}{{{self.key},"]
@@ -245,9 +252,16 @@ def tidy_fields(entry: BibEntry) -> None:
     - 頁碼 en dash 改 --
     - url 若只是 doi 連結就捨去（DOI 已足夠）
     - 文字欄位的裸 & % # 跳脫，否則 XeLaTeX 報錯
+    - month 統一成 jan..dec 巨集（Crossref 會給 month=June 裸字）
+    - doi 去掉 https://doi.org/ 前綴（arXiv 舊式條目會給整條網址）
     """
     out = []
     for k, v in entry.fields:
+        if k == "month":
+            m = strip_value(v).lower()[:3]
+            v = m if m in MONTHS else "{" + strip_value(v) + "}"
+        if k == "doi":
+            v = "{" + re.sub(r"^https?://(dx\.)?doi\.org/", "", strip_value(v), flags=re.I) + "}"
         if k == "pages":
             v = v.replace("\u2013", "--").replace("\u2014", "--")
         if k == "url" and "doi.org/" in v:
@@ -280,7 +294,11 @@ def csl_to_entry(csl: dict) -> BibEntry:
         container = container[0] if container else None
     put({"article": "journal", "inproceedings": "booktitle",
          "incollection": "booktitle"}.get(etype, "howpublished"), container)
-    put("publisher", csl.get("publisher"))
+    publisher = csl.get("publisher")
+    if etype == "thesis":  # 華藝的 publisher 是「國立台灣大學學位論文」，學校應放 institution
+        put("institution", re.sub(r"學位論文$", "", publisher or ""))
+    else:
+        put("publisher", publisher)
     put("volume", csl.get("volume"))
     put("number", csl.get("issue"))
     put("pages", csl.get("page"))
@@ -346,13 +364,22 @@ def fetch_doi(doi: str) -> BibEntry:
         raise CiteError(f"{doi}：無法取得書目資料（{e}）") from e
 
 
+def arxiv_year(arxiv_id: str) -> str:
+    """arXiv ID 的 YYMM 是首次提交年月（2301.12345、hep-th/9901001）。"""
+    yy = int(re.search(r"(\d{2})\d{2}(\.|\d{3}$)", arxiv_id).group(1))
+    return str(1900 + yy if yy >= 91 else 2000 + yy)
+
+
 def fetch_entry(kind: str, value: str) -> BibEntry:
-    if kind == "arxiv":
-        try:
-            return parse_entry(http_get(f"https://arxiv.org/bibtex/{value}", "text/plain"))
-        except (OSError, CiteError):
-            pass  # arXiv 暫時連不上時改走 DataCite
-    return fetch_doi(canonical_doi(kind, value))
+    if kind == "doi":
+        return fetch_doi(value)
+    try:
+        entry = parse_entry(http_get(f"https://arxiv.org/bibtex/{value}", "text/plain"))
+    except (OSError, CiteError):
+        entry = fetch_doi(canonical_doi(kind, value))  # arXiv 暫時連不上時改走 DataCite
+    # arXiv 的 BibTeX 給最新版本的年份（1706.03762 會變 2023）；引用慣例用首次提交年
+    entry.set("year", "{" + arxiv_year(value) + "}")
+    return entry
 
 
 # ============================================================
