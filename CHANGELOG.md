@@ -11,7 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 文獻自動化 `scripts/cite.py`（只用 Python 標準函式庫）：
   - `cite.py add <DOI|arXiv ID>`：經 doi.org content negotiation 取得 BibTeX，產生 `作者年份題目` 格式 citekey、以 DOI 去重後寫入 `.bib`；不需安裝 Zotero。`make cite ID=... INPUT=...`
   - `cite.py sync paper.md`：YAML 有 `zotero-collection:` 時從本機 Better BibTeX 拉最新 `.bib`，取代 GUI 的 Keep updated 設定。`build.sh` / `build.ps1` 編譯前自動執行，Zotero 沒開時僅警告。
-- 論文／報告 skeleton 的 `CLAUDE.md` 新增「文獻管理」規則：優先透過 Zotero MCP 查找與新增文獻，禁止捏造 BibTeX。
+  - arXiv 優先取 arXiv 自家 BibTeX（含 eprint）；DOI 註冊機構不給 BibTeX 時（如華藝）退回 CSL-JSON 轉換。
+  - 方式 C：YAML 有 `zotero-collection:` 且裝了 `zotero-cli`（zotero-mcp-server 套件）時，`cite.py add` 改把文獻加進 Zotero collection，再同步取回 Better BibTeX citekey。agent 不論哪種模式都只用同一個指令。
+- 論文／報告 skeleton 的 `CLAUDE.md` 新增「文獻管理」規則：一律經 `cite.py add` 新增、禁止捏造 BibTeX。
+- `docs/03` 改寫為 DOI／Zotero 同步／Zotero MCP 三種方式。
 - `tests/test_cite.py` 單元測試，並在 `lint.yml` 執行。
 
 ### Changed

@@ -411,6 +411,6 @@ Get-ChildItem (Join-Path $ProjectRoot "profiles") -Directory | ForEach-Object {
 }
 Write-Host "     （完整清單與細節：.\scripts\build.ps1 --list-profiles）"
 Write-Host "  2. 編輯 my-work\paper.md（簡報為 slides.md）的 YAML metadata"
-Write-Host "  3. 設置 Zotero：見 docs\03-zotero-setup.md"
+Write-Host "  3. 設定文獻管理（DOI 自動補／Zotero 同步／Zotero MCP）：見 docs\03-zotero-setup.md"
 Write-Host "  4. 編譯：.\scripts\build.ps1 my-work\paper.md --profile <name>"
 Write-Host "       （簡報改用 .\scripts\build-slides.ps1 my-work\slides.md --profile <name>）"
