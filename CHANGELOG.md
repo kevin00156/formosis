@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `twthesis.sty` 新選項：`chapnum=zhenum`（章號「一、」）、`secsep=-`（節號 1-1）、`fignum=section|subsection`（圖表分章／分章節編號），以及 YAML `watermark:` 浮水印（供要求學生自行加浮水印的學校）。預設值維持原行為，thesis-ncu skeleton 與 examples 的 PDF 逐像素不變。
+- thesis-ncu 的 `profile.yaml` 新增 `source:`（已對照校方〈學位論文撰寫體例參考〉114.09.25 版），並註明預設章節／公式編號與條文的差異及切換方式。
+
+### Fixed
+- `chapnum=zh`（thesis-ccu）的章號在內文、目錄與 `\ref` 全部顯示為「零」：`\thesection` 改用可展開的 `\zhnum{section}`。
+- `cite.py`：Crossref `month=June` 轉為 `jun` 巨集、arXiv 年份改用首次提交年、去掉 doi 欄位的網址前綴、華藝學位論文對應 `@thesis`。
+- Release workflow 改用 `docker/paper.Dockerfile` 編譯範例（v0.1.0 首次發佈因缺 `lmodern` 失敗）。
+
+## [0.1.0] - 2026-09-30
+
 ### Changed
 - **Rebranded**：專案改名為 **Formosis（福爾摩稿）**。原名 PaperForge 與多個同領域專案撞名（含 PyPI `paperforge`）。Python 套件名、GHCR image（`formosis-paper` / `formosis-slides`）、release 檔名、環境變數前綴一併改名；GitHub repo 預期改為 `kevin00156/formosis`。
 - 論文改為獨立 git repo：`scripts/new-thesis.{sh,ps1} <profile> <資料夾>` 在根目錄下建立論文資料夾並 `git init`，工具 repo 以 `.git/info/exclude` 忽略它，並寫入 `.claude/settings.json` 的 `claudeMdExcludes`，避免寫論文時載入工具開發用的 `CLAUDE.md`。

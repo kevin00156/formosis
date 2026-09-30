@@ -36,11 +36,15 @@ profiles/thesis-<school>/
 
 | 選項 | 值 | 效果 |
 |------|----|------|
-| `chapnum` | `arabic` / `zh` | 第1章 / 第一章 |
+| `chapnum` | `arabic` / `zh` / `zhenum` | 第1章 / 第一章 / 一、 |
+| `secsep` | `.` / `-` | 節號 1.1 / 1-1 |
 | `eqnum` | `section` / `continuous` | (1-1) / (1) |
+| `fignum` | `continuous` / `section` / `subsection` | 圖1 / 圖1-1（分章）/ 圖1-1-1（分章節） |
 | `caplabelsep` | `space` / `period` | 圖1 標題 / 圖1. 標題 |
 | `lofprefix` | `true` / `false` | 圖目錄條目前加「圖 」「表 」 |
 | `urldate` | `true` / `false` | `false` 時參考文獻不印瀏覽日期 |
+
+學校要求**學生自行加浮水印**時（臺大、陽明交大、北科大、中正等），在 paper.md YAML 設 `watermark: <圖檔>`；預設置中、寬為紙寬 1/3，位置不同的學校在 `thesisprofile.sty` 重新定義 `\TwthesisWatermarkPlace`，不該有浮水印的頁面前後用 `\WatermarkOff` / `\WatermarkOn`。由圖書館系統加浮水印的學校不要設。
 
 改 `twthesis.sty` 會影響所有學校：CI 會編譯每個 profile 的 skeleton，但版面是否仍正確要人工看過 PDF。
 
