@@ -26,10 +26,12 @@ subfigure: true
 # ============================================================
 geometry: "top=2.5cm, bottom=2.5cm, left=3cm, right=2cm"
 papersize: a4
+# 中正大學要求上傳前全文自行嵌入浮水印：從 https://cloud.ncl.edu.tw/ccu/download.php 下載後取消註解
+# watermark: images/ccu-watermark.png
 classoption: [fleqn]
 
 # ============================================================
-# === 字體設定（CCU 嚴格規範） ===
+# === 字體設定（校方條文未規定字型，依封面樣本與慣例） ===
 # ============================================================
 # 若系統無「標楷體」（常見於 Linux/macOS），改用免費楷體 "AR PL UKai TW"（apt: fonts-arphic-ukai）
 # 或國發會「全字庫正楷體」TW-Kai；論文要求楷體，勿用明體（如 Noto Serif）替代
