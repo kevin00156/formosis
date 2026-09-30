@@ -1,16 +1,16 @@
 # docker/ — CI build images
 
-把 PaperForge build pipeline 用的「重」依賴（TeX Live、Chromium、Noto CJK 字體）打包成預建 image，
+把 Formosis build pipeline 用的「重」依賴（TeX Live、Chromium、Noto CJK 字體）打包成預建 image，
 讓 `.github/workflows/build.yml` 不必每次 CI 都重跑 `apt install`。
 
 ## 兩個 image
 
 | Image | Dockerfile | 內含 | 用途 |
 |---|---|---|---|
-| `ghcr.io/<owner>/paperforge-paper` | [paper.Dockerfile](paper.Dockerfile) | Pandoc + TeX Live (xetex/lang-cjk/...) + biber + lmodern + Noto CJK | 編譯論文／報告 PDF |
-| `ghcr.io/<owner>/paperforge-slides` | [slides.Dockerfile](slides.Dockerfile) | Node 20 + marp-cli + Chrome for Testing + Noto CJK + chromium runtime libs | 編譯 Marp 簡報 PDF/HTML |
+| `ghcr.io/<owner>/formosis-paper` | [paper.Dockerfile](paper.Dockerfile) | Pandoc + TeX Live (xetex/lang-cjk/...) + biber + lmodern + Noto CJK | 編譯論文／報告 PDF |
+| `ghcr.io/<owner>/formosis-slides` | [slides.Dockerfile](slides.Dockerfile) | Node 20 + marp-cli + Chrome for Testing + Noto CJK + chromium runtime libs | 編譯 Marp 簡報 PDF/HTML |
 
-`<owner>` = GitHub repo 擁有者，全小寫。本 repo 為 `ghcr.io/kevin00156/paperforge-paper` 等。
+`<owner>` = GitHub repo 擁有者，全小寫。本 repo 為 `ghcr.io/kevin00156/formosis-paper` 等。
 
 ## 兩支 workflow，分工
 
@@ -34,19 +34,19 @@
 1. **第一次 push 到任何分支且改到 `docker/**`**：`docker-images.yml` 會自動跑並把 image 推到 GHCR。
 2. **檢查 GHCR package visibility**：
    - **Public repo**：image 預設會繼承 repo 設定（public），通常不用動。
-   - **Private repo / fork**：image 預設是 private，fork 拉不到。需到 `https://github.com/<owner>/<repo>/pkgs/container/paperforge-paper/settings`，Danger Zone → Change package visibility → Public。`paperforge-slides` 同。
+   - **Private repo / fork**：image 預設是 private，fork 拉不到。需到 `https://github.com/<owner>/<repo>/pkgs/container/formosis-paper/settings`，Danger Zone → Change package visibility → Public。`formosis-slides` 同。
 3. **確認 build.yml 跑得起來**：在 Actions 頁手動觸發 `Build Examples` workflow。
 
 ## 本機測試 Dockerfile
 
 ```bash
 # 在 repo root 執行
-docker build -f docker/paper.Dockerfile -t paperforge-paper:local docker
-docker run --rm -it -v "$PWD:/workspace" paperforge-paper:local \
+docker build -f docker/paper.Dockerfile -t formosis-paper:local docker
+docker run --rm -it -v "$PWD:/workspace" formosis-paper:local \
     bash -c "./scripts/build.sh examples/minimal/paper.md --verbose"
 
-docker build -f docker/slides.Dockerfile -t paperforge-slides:local docker
-docker run --rm -it -v "$PWD:/workspace" paperforge-slides:local \
+docker build -f docker/slides.Dockerfile -t formosis-slides:local docker
+docker run --rm -it -v "$PWD:/workspace" formosis-slides:local \
     bash -c "./scripts/build-slides.sh examples/slides-minimal/slides.md --pdf"
 ```
 

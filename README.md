@@ -1,19 +1,19 @@
 <p align="center">
-  <img src="docs/assets/logo.png" alt="PaperForge logo" width="200">
+  <img src="docs/assets/logo.png" alt="Formosis logo" width="200">
 </p>
 
-# PaperForge
+# Formosis（福爾摩稿）
 
 > Markdown 寫稿、Pandoc + XeLaTeX 鍛出格式精準的 PDF 論文／報告，附 Marp 簡報工作流
 
-[![Lint](https://github.com/kevin00156/paperforge/actions/workflows/lint.yml/badge.svg)](https://github.com/kevin00156/paperforge/actions/workflows/lint.yml)
-[![Build Examples](https://github.com/kevin00156/paperforge/actions/workflows/build.yml/badge.svg)](https://github.com/kevin00156/paperforge/actions/workflows/build.yml)
+[![Lint](https://github.com/kevin00156/formosis/actions/workflows/lint.yml/badge.svg)](https://github.com/kevin00156/formosis/actions/workflows/lint.yml)
+[![Build Examples](https://github.com/kevin00156/formosis/actions/workflows/build.yml/badge.svg)](https://github.com/kevin00156/formosis/actions/workflows/build.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Pandoc](https://img.shields.io/badge/Pandoc-%E2%89%A53.0-blue)](https://pandoc.org)
 
-PaperForge 是一套以 **Markdown + Pandoc + XeLaTeX** 為核心的「文件鍛造」工作鏈，給需要產出**格式絕對正確**的專業文件使用：學位論文、期刊投稿、政府報告書、技術白皮書等。圖、表、引用、目錄、交叉參照全部走 LaTeX 自動編號，封面字距與裝幀細節由 profile 模板掌控。
+Formosis 是一套以 **Markdown + Pandoc + XeLaTeX** 為核心的「文件鍛造」工作鏈，給需要產出**格式絕對正確**的專業文件使用：學位論文、期刊投稿、政府報告書、技術白皮書等。圖、表、引用、目錄、交叉參照全部走 LaTeX 自動編號，封面字距與裝幀細節由 profile 模板掌控。
 
-PaperForge並沒有新寫任何的新工具，僅提供一個框架，整合所有工具鏈，以保證此專案的穩定性。
+Formosis並沒有新寫任何的新工具，僅提供一個框架，整合所有工具鏈，以保證此專案的穩定性。
 
 同一份原稿還能順帶鍛出口試／工作會議用的 **Marp 簡報**（PDF / HTML），共用一套版本控制與資產目錄。
 
@@ -23,7 +23,7 @@ PaperForge並沒有新寫任何的新工具，僅提供一個框架，整合所�
 
 完全不熟命令列、Git、LaTeX？這套影片從零講起，跟著做就能編出第一份 PDF：
 
-▶️ **[YouTube 播放清單：PaperForge 麻瓜入門系列](https://www.youtube.com/playlist?list=PLR0wzekWGCT6TZnI4mxCV1HcQOE0iJjy9)**
+▶️ **[YouTube 播放清單：麻瓜入門系列](https://www.youtube.com/playlist?list=PLR0wzekWGCT6TZnI4mxCV1HcQOE0iJjy9)**
 
 文字版教學請見下方「[5 分鐘快速開始](#5-分鐘快速開始)」與 [docs/](docs/) 目錄。
 
@@ -31,7 +31,7 @@ PaperForge並沒有新寫任何的新工具，僅提供一個框架，整合所�
 
 ## 為什麼選這套？
 
-| 痛點 | PaperForge 解法 |
+| 痛點 | Formosis 解法 |
 |------|----------|
 | Word 排版難掌控、追修不同步 | Markdown 純文字 + Git 版本控制 |
 | 引用格式手動維護易出錯 | 貼 DOI 自動補 BibTeX；Zotero 編譯前自動同步；Claude 可經 Zotero MCP 直接查找、新增文獻 |
@@ -67,8 +67,8 @@ PaperForge並沒有新寫任何的新工具，僅提供一個框架，整合所�
 ### 1. Clone repo
 
 ```bash
-git clone https://github.com/kevin00156/paperforge.git
-cd paperforge
+git clone https://github.com/kevin00156/formosis.git
+cd formosis
 ```
 
 ### 2. 執行一鍵安裝
@@ -83,17 +83,19 @@ cd paperforge
 bash scripts/install.sh
 ```
 
-安裝腳本會自動安裝：Pandoc、XeLaTeX、biber、CJK 字體、Python+uv（可選），以及把各 profile 內附的 Claude Skill（例如 `thesis-ncu` profile 自帶的 `ncu-paper-writer`，與簡報用的 `ncu-slides-writer`）安裝到 `~/.claude/skills/`。各 skill 的名稱由其作者決定，PaperForge 只負責掃描安裝、不強制命名。
+安裝腳本會自動安裝：Pandoc、XeLaTeX、biber、CJK 字體、Python+uv（可選），以及把各 profile 內附的 Claude Skill（例如 `thesis-ncu` profile 自帶的 `ncu-paper-writer`，與簡報用的 `ncu-slides-writer`）安裝到 `~/.claude/skills/`。各 skill 的名稱由其作者決定，Formosis 只負責掃描安裝、不強制命名。
 
-### 3. 複製論文骨架
+### 3. 建立你的論文
 
 ```bash
 # Windows
-Copy-Item -Recurse profiles\thesis-ncu\skeleton my-thesis
+.\scripts\new-thesis.ps1 thesis-ncu my-thesis
 
 # Linux/macOS
-cp -r profiles/thesis-ncu/skeleton/ my-thesis/
+./scripts/new-thesis.sh thesis-ncu my-thesis
 ```
+
+`my-thesis/` 會是一個**獨立的 git repo**：論文的版本紀錄與工具分開，之後更新 Formosis 不會動到你的論文。可用的 profile 清單：`./scripts/build.sh --list-profiles`。
 
 ### 4. 編輯 `my-thesis/paper.md`
 
@@ -125,8 +127,8 @@ make build INPUT=my-thesis/paper.md
 bash scripts/install-marp.sh      # Linux / macOS
 .\scripts\install-marp.ps1        # Windows
 
-# 2. 複製簡報骨架
-cp -r profiles/slides-ncu/skeleton/ my-defense/
+# 2. 建立簡報（獨立 git repo）
+./scripts/new-thesis.sh slides-ncu my-defense
 
 # 3. 編輯 my-defense/slides.md（Marp Markdown 語法）
 
@@ -143,7 +145,7 @@ make slides SLIDES=my-defense/slides.md
 ## 目錄結構
 
 ```
-paperforge/
+formosis/
 ├── profiles/                # 所有 profile（論文／簡報／…，每個 profile 自成一套）
 │   ├── README.md
 │   ├── thesis-ncu/          # 國立中央大學學位論文 profile（type: thesis）
@@ -281,7 +283,18 @@ A: 完全可以。Skill 是可選的；核心的 Pandoc + LaTeX 編譯工作流�
 
 ## 致謝
 
-PaperForge 發想自實際撰寫 NCU 碩士論文的工作流；profile-based 架構讓它能擴充到其他文件類型。感謝 Pandoc、TeX Live、Zotero、Marp 等開源專案，以及所有貢獻者。
+Formosis 發想自實際撰寫 NCU 碩士論文的工作流；profile-based 架構讓它能擴充到其他文件類型。感謝 Pandoc、TeX Live、Zotero、Marp 等開源專案，以及所有貢獻者。
+
+---
+
+## 名字由來
+
+**Formosis**＝Formosa（福爾摩沙）＋ form（格式）＋ thesis（論文）；中文名「福爾摩稿」。
+給臺灣的碩博士生：格式交給工具，你專心寫內容。
+
+至於字尾 -osis 在英文裡常見於病名，這點就留給寫過論文的人自行體會。
+
+專案原名 PaperForge，因與多個同名專案撞名而改名。
 
 ---
 
@@ -289,4 +302,4 @@ PaperForge 發想自實際撰寫 NCU 碩士論文的工作流；profile-based �
 
 MIT License — 見 [LICENSE](LICENSE)。
 
-模板與 Skill 內容亦採 MIT 授權。各 profile 對應的學校／期刊／單位格式規範屬其原權利人所有，PaperForge 僅整理並協助撰寫。
+模板與 Skill 內容亦採 MIT 授權。各 profile 對應的學校／期刊／單位格式規範屬其原權利人所有，Formosis 僅整理並協助撰寫。

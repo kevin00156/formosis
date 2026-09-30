@@ -577,24 +577,24 @@ $endif$
 
 % === 目錄/圖目錄/表目錄頁面標題:置中、大字、粗體(取代預設的 \section*) ===
 \makeatletter
-\newcommand{\paperforgeTocPageHeader}{%
+\newcommand{\formosisTocPageHeader}{%
   \vspace{0.4em}%
   \noindent\hfill{\normalsize 頁次}\par%
   \vspace{0.4em}%
 }
 \renewcommand\tableofcontents{%
   \begin{center}{\Large\bfseries\contentsname}\end{center}%
-  \paperforgeTocPageHeader%
+  \formosisTocPageHeader%
   \@starttoc{toc}%
 }
 \renewcommand\listoffigures{%
   \begin{center}{\Large\bfseries\listfigurename}\end{center}%
-  \paperforgeTocPageHeader%
+  \formosisTocPageHeader%
   \@starttoc{lof}%
 }
 \renewcommand\listoftables{%
   \begin{center}{\Large\bfseries\listtablename}\end{center}%
-  \paperforgeTocPageHeader%
+  \formosisTocPageHeader%
   \@starttoc{lot}%
 }
 \makeatother
@@ -646,8 +646,8 @@ $endif$
 \setlength{\emergencystretch}{3em}
 
 % === 技術識別符允許底線處換行 ===
-\let\paperforgeOrigUnderscore\_
-\renewcommand{\_}{\ifmmode\paperforgeOrigUnderscore\else\textunderscore\allowbreak\fi}
+\let\formosisOrigUnderscore\_
+\renewcommand{\_}{\ifmmode\formosisOrigUnderscore\else\textunderscore\allowbreak\fi}
 
 % === 使用者 YAML header-includes(可 override 上方任何一條) ===
 $for(header-includes)$

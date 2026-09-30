@@ -1,6 +1,6 @@
 name: Build CI Docker Images
 
-# 建置並推送 PaperForge build pipeline 用的 base image 到 GHCR。
+# 建置並推送 Formosis build pipeline 用的 base image 到 GHCR。
 # Image 用途：讓 build.yml 跳過每次 CI 都要重跑的 TeX Live / npm / chromium 安裝。
 #
 # 觸發時機：
@@ -34,9 +34,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - image: paperforge-paper
+          - image: formosis-paper
             dockerfile: docker/paper.Dockerfile
-          - image: paperforge-slides
+          - image: formosis-slides
             dockerfile: docker/slides.Dockerfile
 
     steps:

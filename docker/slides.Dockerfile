@@ -1,12 +1,12 @@
-# PaperForge — slides build image
+# Formosis — slides build image
 #
 # 預裝 Node.js + marp-cli + Chromium 執行所需的系統 lib + Noto CJK 字體。
 # Chromium 本體由 puppeteer 在 image build 時下載到 PUPPETEER_CACHE_DIR，
 # CI 第一次跑時就不必再撈 Chrome for Testing。
 #
 # 鏡像名（由 docker-images.yml 推到 GHCR）：
-#   ghcr.io/<owner>/paperforge-slides:latest
-#   ghcr.io/<owner>/paperforge-slides:sha-<7chars>
+#   ghcr.io/<owner>/formosis-slides:latest
+#   ghcr.io/<owner>/formosis-slides:sha-<7chars>
 
 FROM node:20-bookworm-slim
 

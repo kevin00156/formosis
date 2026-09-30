@@ -1,7 +1,7 @@
 ﻿#Requires -Version 5.1
 <#
 .SYNOPSIS
-    PaperForge — Marp 簡報編譯腳本 (Windows PowerShell)
+    Formosis — Marp 簡報編譯腳本 (Windows PowerShell)
 
 .DESCRIPTION
     將 Markdown 簡報檔案編譯成 PDF 或 HTML。
@@ -215,6 +215,18 @@ $marpArgs = $marpArgsPrefix + @(
 switch ($Format) {
     "pdf"  { $marpArgs += "--pdf" }
     "html" { $marpArgs += "--html" }
+}
+
+# --- 新版提醒（scripts\update.py；每天最多連網一次，失敗或離線都不出聲）---
+$updater = Join-Path $ScriptDir "update.py"
+$py = $null
+foreach ($name in @("python", "python3")) {
+    $cmd = Get-Command $name -ErrorAction SilentlyContinue
+    # 排除 Microsoft Store 的 python 占位 stub（不會執行腳本）
+    if ($cmd -and -not ($cmd.Source -like "*\WindowsApps\*")) { $py = $cmd.Source; break }
+}
+if ($py -and (Test-Path $updater)) {
+    Invoke-Native -Cmd $py -ArgList @($updater, "check") -ShowOutput | Out-Null
 }
 
 if ($Watch) {

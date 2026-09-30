@@ -1,12 +1,14 @@
-# CLAUDE.md — PaperForge 專案開發指引
+# CLAUDE.md — Formosis 專案開發指引
 
 本檔案給後續在這個 **repo 本身**進行開發的 Claude 看（不是給「使用此工具寫論文／報告」的使用者看 — 那份在 `profiles/<profile>/skeleton/CLAUDE.md`）。
+
+> **若你的工作目錄是根目錄下的某個論文資料夾**（例 `my-thesis/`，有自己的 `.git`），本檔不適用，請忽略本檔、只遵守該資料夾的 `CLAUDE.md`。`scripts/new-thesis` 建立的論文資料夾會以 `claudeMdExcludes` 排除本檔，這段是備援。
 
 ---
 
 ## 專案定位
 
-PaperForge 是「Markdown → 格式精準 PDF」的鍛造工具鏈本身的開發 repo，不是某人的論文。所有撰寫工作流統一在 `profiles/<type>-<style>/` 抽象之下，目前有兩種 type：
+Formosis 是「Markdown → 格式精準 PDF」的鍛造工具鏈本身的開發 repo，不是某人的論文。所有撰寫工作流統一在 `profiles/<type>-<style>/` 抽象之下，目前有兩種 type：
 
 **論文／報告 type（Pandoc + XeLaTeX）**：
 - profile 例：`thesis-ncu`、`journal-ieee`（未來）、`report-gov-tw`（未來）
@@ -38,10 +40,10 @@ PaperForge 是「Markdown → 格式精準 PDF」的鍛造工具鏈本身的開�
 **Profile 偵測（重要）**：build script 不再硬寫單一預設 profile。當使用者沒帶 `--profile` 旗標時（例：VS Code `ctrl+shift+b`，task 只傳 `${file}`），build script 會解析輸入 `.md` 開頭的 YAML frontmatter 並讀取 `profile:` 欄位；解析失敗或欄位不存在時，才落到預設 `thesis-ncu`（論文）/ `slides-ncu`（簡報）。**因此所有 skeleton 與 examples 都應在 YAML 開頭顯式寫出 `profile: <name>`**，使用者複製後也應保留此欄位。
 
 **抽象層 vs profile 內容（重要）**：
-PaperForge 是「殼／框架」 — 負責 profile 載入、build pipeline、跨平台安裝、CI 等共用機制。
+Formosis 是「殼／框架」 — 負責 profile 載入、build pipeline、跨平台安裝、CI 等共用機制。
 **profile 內容（含 skill、template、skeleton、theme）保留各自學校／機關／單位的原生身分**：
-- skill 的 `name:` 由 profile／skill 作者自己決定（例：`ncu-paper-writer`、`ncu-slides-writer`），**不要強制掛 `paperforge-` 前綴**。
-- 各 SKILL.md、template、skeleton 的內容描述應該以該學校／機關為主語，而非 PaperForge。
+- skill 的 `name:` 由 profile／skill 作者自己決定（例：`ncu-paper-writer`、`ncu-slides-writer`），**不要強制掛 `formosis-` 前綴**。
+- 各 SKILL.md、template、skeleton 的內容描述應該以該學校／機關為主語，而非 Formosis。
 - 改框架時不要動到 profile 的學校 / 機關特定內容；要為其他學校／機關新增 profile 時，照 `profiles/<type>-<style>/` 加一份即可。
 
 **目錄區分**：
@@ -55,25 +57,24 @@ PaperForge 是「殼／框架」 — 負責 profile 載入、build pipeline、�
 
 ### 工具開發 vs 個人論文：用 worktree 隔離
 
-**這個 repo 有「兩條腿」**：
+**論文不在工具 repo 的分支上**：使用者用 `scripts/new-thesis.{sh,ps1} <profile> <資料夾>` 在根目錄下建立論文資料夾，它是**獨立的 git repo**，並寫進工具 repo 的 `.git/info/exclude`。所以工具 repo 只有 `main` 與 feature 分支。
 
-1. **主分支 `main`**：PaperForge 工具本身的開發
-2. **使用者自己的論文／報告分支**（如 `wu`、`nstc` 等）：使用者實際撰寫文件時建立的個人分支
+**歷史問題**：早期使用者直接在工具 repo 開論文分支（如 `wu`、`nstc`），Claude 若在使用者切到論文分支時 `git commit` 工具修正，會誤投到論文分支（已踩過兩次，commit `4d7c1c1` 跑到 wu、`1d47953` 跑到 nstc）。舊的論文分支應遷移成獨立論文 repo；在遷移完成前，下面的 worktree 規則仍然適用。
 
-**問題**：使用者在 IDE 中可能正切在自己的論文分支寫論文，這時 Claude 若直接 `git commit` 工具相關修正會誤投到使用者分支上（已踩過兩次，commit `4d7c1c1` 跑到 wu、`1d47953` 跑到 nstc）。
+**在論文資料夾內工作時**：`cd` 進 `my-thesis/` 後 git 指令作用在論文 repo，不是工具 repo。做工具開發前務必確認 `git rev-parse --show-toplevel` 是工具 repo 根目錄。
 
 **解法（強制）**：Claude 做工具開發時**一律使用 worktree**，與使用者的工作目錄完全隔離。
 
 ```bash
 # 一次性設定（第一次需要時建立）
-git worktree add ../paperforge.wt-main main
+git worktree add ../formosis.wt-main main
 
 # 之後所有工具開發都在 worktree 目錄裡操作
-cd ../paperforge.wt-main
+cd ../formosis.wt-main
 # ... 編輯、commit、push 都在這裡
 ```
 
-> 註：在尚未把本機目錄從 `ncu_paper_writer/` 改名為 `paperforge/` 之前，worktree 路徑請沿用 `../ncu_paper_writer.wt-main`；目錄改名後再同步更新。
+> 註：專案曾名為 `ncu_paper_writer`、`paperforge`。本機目錄尚未改名為 `formosis/` 前，worktree 路徑沿用舊名（例 `../paperforge.wt-main`）；目錄改名後再同步更新。
 
 **檢查清單**：每次開始工具開發任務前先驗證：
 
@@ -103,14 +104,14 @@ GitHub 端對 `main` 已開啟 branch protection（透過 REST API `PUT /repos/{
 
 ```bash
 # 1. 在 .wt-main 確認在最新 main 上
-cd ../paperforge.wt-main          # 名稱未改前用 ncu_paper_writer.wt-main
+cd ../formosis.wt-main          # 本機目錄未改名前用舊名，例 paperforge.wt-main
 git fetch origin
 git rebase origin/main            # 同步到最新 main
 
 # 2. 開一個專屬該工作的 worktree + feature 分支（或在現有 feature worktree 上工作）
 cd ..
-git worktree add ./paperforge.wt-<short-name> -b <type>/<short-desc> main
-cd paperforge.wt-<short-name>
+git worktree add ./formosis.wt-<short-name> -b <type>/<short-desc> main
+cd formosis.wt-<short-name>
 
 # 3. 在這個 worktree 寫程式、commit
 # ... edit, git add, git commit ...
@@ -125,12 +126,12 @@ gh pr create --title "feat: ..." --body "..."
 gh pr merge --rebase --delete-branch
 
 # 7. 同步本地 main
-cd ../paperforge.wt-main
+cd ../formosis.wt-main
 git fetch origin
 git rebase origin/main
 
 # 8. 清理用完的 worktree
-git worktree remove ../paperforge.wt-<short-name>
+git worktree remove ../formosis.wt-<short-name>
 ```
 
 ### 若 main 在 feature 分支期間有更新
@@ -263,8 +264,8 @@ PDF 必須 > 100 KB 才算通過（Marp 內嵌字體較肥）。首次執行會�
 ### CI build images（重要）
 
 build.yml 不再每次跑 `apt install`，改用 GHCR 上的預建 image：
-- `ghcr.io/<owner>/paperforge-paper:ci-<run_id>` — Pandoc + TeX Live + biber + Noto CJK
-- `ghcr.io/<owner>/paperforge-slides:ci-<run_id>` — Node 20 + marp-cli + Chrome for Testing + Noto CJK
+- `ghcr.io/<owner>/formosis-paper:ci-<run_id>` — Pandoc + TeX Live + biber + Noto CJK
+- `ghcr.io/<owner>/formosis-slides:ci-<run_id>` — Node 20 + marp-cli + Chrome for Testing + Noto CJK
 
 Dockerfile 在 [`docker/`](docker/)，詳細說明見 [`docker/README.md`](docker/README.md)。
 

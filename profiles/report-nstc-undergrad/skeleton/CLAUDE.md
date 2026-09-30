@@ -1,6 +1,6 @@
 # 國科會大專學生研究計畫成果報告專案
 
-本專案使用 [PaperForge](https://github.com/kevin00156/paperforge) 的 `report-nstc-undergrad` profile 工作流撰寫。
+本專案使用 [Formosis](https://github.com/kevin00156/formosis) 的 `report-nstc-undergrad` profile 工作流撰寫。
 
 ## Claude Code Skill
 
@@ -16,7 +16,7 @@
 
 ## 編譯
 
-從 PaperForge 專案根目錄執行（假設此報告資料夾在 PaperForge 子目錄）：
+從 Formosis 專案根目錄執行（假設此報告資料夾在 Formosis 子目錄）：
 
 - Windows: `..\scripts\build.ps1 paper.md --profile report-nstc-undergrad`
 - Linux/macOS: `../scripts/build.sh paper.md --profile report-nstc-undergrad`
@@ -43,6 +43,6 @@
 ## 開始撰寫
 
 1. 編輯 `paper.md` 開頭 YAML 區塊，替換所有 `<placeholder>` 為實際內容（計畫名稱、計畫編號、執行單位等）
-2. 設定文獻來源（三選一，詳見 PaperForge docs/03）：只用 DOI 加文獻、或在 YAML 設 `zotero-collection:` 由 Zotero 管理、或再加裝 Zotero MCP 讓 Claude 直接操作文獻庫
+2. 設定文獻來源（三選一，詳見 Formosis docs/03）：只用 DOI 加文獻、或在 YAML 設 `zotero-collection:` 由 Zotero 管理、或再加裝 Zotero MCP 讓 Claude 直接操作文獻庫
 3. 撰寫各章節，記得每個章節都加 `{#sec:...}` 錨點
 4. 編譯產生 PDF，檢視外封、內封與正文排版

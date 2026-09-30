@@ -79,6 +79,24 @@ profiles/<profile>/
 
 編譯：`./scripts/build-slides.sh --profile <name> path/to/slides.md`
 
+## 格式來源（`source:`）
+
+各校、各系所甚至各實驗室的論文規範常有差異，profile 必須寫明它依據什麼：
+
+```yaml
+source:
+  status: derived        # verified = 已對照校方正式條文；derived = 依實際論文或系所範本推得
+  basis: 國立中正大學機械工程學系實驗室學長通過口試之論文 Word 檔
+  url: <規範文件網址，若有>
+  note: 非校方正式規範，其他系所請與系辦確認。
+```
+
+分層原則：
+
+- **學校**：`thesisprofile.sty` + skeleton，放在本 repo
+- **系所**：有正式文件時才另開 profile（例 `thesis-ccu-me`），只需約 20 行的 `thesisprofile.sty` 加一份 skeleton
+- **實驗室／個人慣例**：寫在自己論文 `paper.md` 的 `header-includes`，不進本 repo
+
 ## 新增一個 profile
 
 ### 新增論文 profile（例：thesis-ntu）

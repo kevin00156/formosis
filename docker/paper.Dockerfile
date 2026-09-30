@@ -1,4 +1,4 @@
-# PaperForge — paper build image
+# Formosis — paper build image
 #
 # 預裝 Pandoc + TeX Live + biber + Noto CJK + AR PL UKai（免費楷體）字體，
 # 給 build.yml 的 paper job 使用，省下每次 CI 都要重跑 apt install 的 10–15 分鐘。
@@ -8,8 +8,8 @@
 # 既合法、又因同為楷體而能驗出楷體缺 glyph 問題（明體替身會掩蓋）。
 #
 # 鏡像名（由 docker-images.yml 推到 GHCR）：
-#   ghcr.io/<owner>/paperforge-paper:latest
-#   ghcr.io/<owner>/paperforge-paper:sha-<7chars>
+#   ghcr.io/<owner>/formosis-paper:latest
+#   ghcr.io/<owner>/formosis-paper:sha-<7chars>
 #
 # 對應 apt 套件 / 關鍵 .sty 的映射請看 .github/workflows/build.yml 內註解。
 

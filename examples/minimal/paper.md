@@ -91,7 +91,7 @@ toc: false
 {\Large\bfseries 摘要}
 \end{center}
 
-本文為 PaperForge 工作流的最小可編譯範例。本範例展示了完整的論文編譯流程，包括 Pandoc Markdown 轉 LaTeX、XeLaTeX 編譯、biber 處理參考文獻、以及最終的 PDF 生成。
+本文為 Formosis 工作流的最小可編譯範例。本範例展示了完整的論文編譯流程，包括 Pandoc Markdown 轉 LaTeX、XeLaTeX 編譯、biber 處理參考文獻、以及最終的 PDF 生成。
 
 \vspace{0.5cm}
 
@@ -107,7 +107,7 @@ toc: false
 
 ## 範例段落 {#sec:intro-example}
 
-本文展示了 PaperForge 的基本編譯能力。引用範例：He 等人[@he2016resnet]提出殘差學習。
+本文展示了 Formosis 的基本編譯能力。引用範例：He 等人[@he2016resnet]提出殘差學習。
 
 本範例涵蓋的章節結構請見 \ref{sec:method} 章節。
 
@@ -124,7 +124,7 @@ y = ax + b
 
 # 結論 {#sec:conclusion}
 
-若你看到這份 PDF 完整顯示中文、頁碼、引用，代表 PaperForge 環境已正確安裝。
+若你看到這份 PDF 完整顯示中文、頁碼、引用，代表 Formosis 環境已正確安裝。
 
 <!-- 參考文獻 -->
 \newpage

@@ -1,12 +1,12 @@
 [project]
-name = "paperforge"
+name = "formosis"
 version = "0.1.0"
-description = "PaperForge：用 Markdown + Pandoc + XeLaTeX 鍛造格式精準的論文／報告 PDF，附 Marp 簡報工作流。內建 NCU 學位論文 profile。"
+description = "Formosis（福爾摩稿）：臺灣碩博士論文的 Markdown → 格式精準 PDF 工作流（Pandoc + XeLaTeX），附 Marp 簡報與 Claude Code 撰寫規範。"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
 authors = [
-    { name = "PaperForge Contributors" }
+    { name = "Formosis Contributors" }
 ]
 keywords = ["pandoc", "latex", "thesis", "report", "ncu", "markdown", "zotero", "marp", "claude-code"]
 classifiers = [
@@ -43,10 +43,10 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/kevin00156/paperforge"
-Documentation = "https://github.com/kevin00156/paperforge/tree/main/docs"
-Repository = "https://github.com/kevin00156/paperforge"
-Issues = "https://github.com/kevin00156/paperforge/issues"
+Homepage = "https://github.com/kevin00156/formosis"
+Documentation = "https://github.com/kevin00156/formosis/tree/main/docs"
+Repository = "https://github.com/kevin00156/formosis"
+Issues = "https://github.com/kevin00156/formosis/issues"
 
 [build-system]
 requires = ["hatchling"]

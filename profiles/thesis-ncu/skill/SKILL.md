@@ -522,7 +522,7 @@ He 等人[@he2016resnet]提出殘差學習，準確率達 96.43%。
 
 ```yaml
 ---
-profile: thesis-ncu     # PaperForge 編譯時自動套用此 profile
+profile: thesis-ncu     # Formosis 編譯時自動套用此 profile
 
 # === 論文基本資訊 ===
 thesis-title-zh: "論文中文題目"

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""PaperForge lint — 單一真相來源的格式檢查器。
+"""Formosis lint — 單一真相來源的格式檢查器。
 
 設計原則:規則只寫一份,由三個入口共用,避免 bash/PowerShell/CI 三處抄寫漂移:
   • build.sh / build.ps1  編譯時呼叫(warn-only,不擋編譯)

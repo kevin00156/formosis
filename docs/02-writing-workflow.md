@@ -7,7 +7,7 @@
 ## 整體流程
 
 ```
-1. 用 --list-profiles 選定 profile，複製 profiles/<profile>/skeleton/ 為自己的資料夾
+1. 用 --list-profiles 選定 profile，用 scripts/new-thesis 建立自己的論文 repo
 2. 選定文獻來源：DOI 自動補、Zotero 同步，或讓 Claude 經 Zotero MCP 操作（見 docs/03）
 3. 編輯 paper.md（YAML metadata + 章節內容）
 4. 邊寫邊用 scripts/build.sh / scripts/build.ps1 編譯預覽
@@ -22,30 +22,36 @@
 ./scripts/build.sh --list-profiles      # Linux/macOS（Windows 用 -ListProfiles，或 make list-profiles）
 ```
 
-挑好之後，把對應 profile 的 `skeleton/` 複製出來（把 `<profile>` 換成你選的名稱）：
+挑好之後，用 `new-thesis` 建立你的論文資料夾（把 `<profile>` 換成你選的名稱）：
 
 ```bash
 # Linux/macOS
-cp -r profiles/<profile>/skeleton/ my-thesis/
+./scripts/new-thesis.sh <profile> my-thesis
 
 # Windows PowerShell
-Copy-Item -Recurse profiles\<profile>\skeleton my-thesis
+.\scripts\new-thesis.ps1 <profile> my-thesis
 ```
 
-可以放在 PaperForge repo 內，或獨立目錄都可以（編譯時注意路徑即可）。
+它會做四件事：
+
+1. 把 `profiles/<profile>/skeleton/` 複製到 Formosis 根目錄下的 `my-thesis/`
+2. 把 `my-thesis/` 初始化成**獨立的 git repo**（分支 `main`，已有第一個 commit）
+3. 讓 Formosis 的 repo 忽略 `my-thesis/`（寫在本機的 `.git/info/exclude`），所以之後更新 Formosis 不會碰到你的論文
+4. 寫入 `my-thesis/.claude/settings.json`，讓你在論文資料夾開 Claude Code 時，不會載入 Formosis 開發用的 `CLAUDE.md`
+
+論文資料夾要直接放在 Formosis 根目錄下，因為 skeleton 內的說明以 `../scripts/` 呼叫編譯腳本。
 
 > **profile 怎麼套用？** 每份 skeleton 的 `paper.md` / `slides.md` 開頭 YAML 已預填
 > `profile: <profile>` 欄位，編譯時自動套用對應格式。優先序為
 > **CLI 旗標 `--profile <name>` > 輸入檔 YAML 的 `profile:` 欄位 > 預設**，所以一般
 > 情況保留 skeleton 預填的欄位即可，不必每次帶旗標。換 profile 時改這個欄位（或編譯時帶 `--profile`）就好。
 
-**建議**：把 `my-thesis/` 作為獨立的 Git repo 來追蹤論文修改歷史。
+**備份到 GitHub**：在 GitHub 建一個 private repo，然後：
 
 ```bash
 cd my-thesis
-git init
-git add .
-git commit -m "Initial commit from template"
+git remote add origin <你的 repo 網址>
+git push -u origin main
 ```
 
 ## Step 2：填寫 YAML metadata
@@ -54,7 +60,7 @@ git commit -m "Initial commit from template"
 
 ```yaml
 ---
-profile: thesis-ncu                   # PaperForge 編譯時自動套用此 profile（skeleton 已預填）
+profile: thesis-ncu                   # Formosis 編譯時自動套用此 profile（skeleton 已預填）
 thesis-title-zh: "你的論文中文題目"
 thesis-title-en: "Your Thesis English Title"
 department: "機械工程學系"          # 改成你的系所

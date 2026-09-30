@@ -10,6 +10,9 @@ description: |
 本論文以 **Markdown + Pandoc + LaTeX** 流程產生，頁碼、排版由 Pandoc 自動處理，
 **請嚴格遵守以下技術與格式規範**。
 
+> **格式來源**：本規範依國立中正大學**機械工程學系**實際通過口試的論文 Word 檔整理，並非校方正式條文。
+> 使用者若屬其他系所，請提醒其向系辦或指導教授確認邊界、封面與前置頁要求。
+
 ---
 
 ## ⚠️ 強制規範（必須遵守）
@@ -490,7 +493,7 @@ He 等人[@he2016resnet]提出殘差學習，準確率達 96.43%。
 
 ```yaml
 ---
-profile: thesis-ccu     # PaperForge 編譯時自動套用此 profile
+profile: thesis-ccu     # Formosis 編譯時自動套用此 profile
 
 # === 論文基本資訊 ===
 thesis-title-zh: "論文中文題目"

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ============================================================
-# PaperForge — 跨平台編譯腳本 (Linux/macOS)
+# Formosis — 跨平台編譯腳本 (Linux/macOS)
 # ============================================================
 #
 # 用法：
@@ -105,7 +105,7 @@ done
 # --- 列出 profiles/*/profile.yaml 的 name / type / style / description ---
 # 動態枚舉，新增 profile 自動出現，無需維護清單。
 list_profiles() {
-    printf "PaperForge — 可用 profile（profiles/<name>/）：\n\n"
+    printf "Formosis — 可用 profile（profiles/<name>/）：\n\n"
     printf "  %-26s %-8s %-10s %s\n" "NAME" "TYPE" "STYLE" "DESCRIPTION"
     local found=0
     local y
@@ -368,14 +368,15 @@ do_build() {
     do_lint
 
     local tmpdir
-    tmpdir="$(mktemp -d "${TMPDIR:-/tmp}/paperforge.XXXXXX")"
+    tmpdir="$(mktemp -d "${TMPDIR:-/tmp}/formosis.XXXXXX")"
     trap "rm -rf '$tmpdir'" EXIT
 
     log_info "暫存目錄：$tmpdir"
 
     # 複製來源目錄內容到暫存，避免雲端同步鎖檔
     log_info "複製來源檔案到暫存目錄"
-    cp -r "$SRC_DIR"/. "$tmpdir/"
+    # 論文資料夾通常是獨立 git repo，.git 不需要也可能很大，略過
+    (cd "$SRC_DIR" && tar cf - --exclude=./.git .) | (cd "$tmpdir" && tar xf -)
 
     # 複製模板到暫存（內部統一命名為 template.latex）
     cp "$TEMPLATE" "$tmpdir/template.latex"
@@ -540,6 +541,11 @@ do_watch() {
         done
     fi
 }
+
+# --- 新版提醒（scripts/update.py；每天最多連網一次，失敗或離線都不出聲）---
+if command -v python3 &> /dev/null && [[ -f "${SCRIPT_DIR}/update.py" ]]; then
+    python3 "${SCRIPT_DIR}/update.py" check || true
+fi
 
 # --- 主流程 ---
 log_info "輸入檔案：$INPUT_ABS"
