@@ -1,0 +1,98 @@
+% ============================================================
+% thesis-nccu — 國立政治大學學位論文版面
+%
+% 依據：國立政治大學學位論文格式規範（圖書館博碩士論文系統「檔案下載」，PDF 2026-07-16）。
+% 下方註解的條號指該規範「二、各項說明」與附件。
+% 共用版面在 shared/latex/twthesis.sty；這裡只放政大與共用設定不同之處。
+% 封面、書名頁與前置頁順序在 skeleton/paper.md；紙張、邊界、字型、行距在 paper.md 的 YAML。
+% 紙張與邊界校級未規定，見 profile.yaml 的 source.note。
+% ============================================================
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{thesisprofile}[2026/10/01 NCCU thesis profile]
+
+\RequirePackage[
+  chapnum=zh,          % 第一章（附件三、四）
+  eqnum=continuous,    % (1)、(2)：條文未規定，與圖表同採全文連續
+  fignum=continuous,   % 表 1、圖 1，全文流水號（附件三表次、圖次範例）
+  caplabelsep=space,   % 表 1 ○○○
+  lofprefix=true,      % 表次條目：表 1 ○○○
+  urldate=true,
+]{twthesis}
+
+\newcommand{\ProfileUniversityZh}{國立政治大學}
+
+% === 目次名稱：目次、表次、圖次（二(七)、附件三）===
+\renewcommand{\contentsname}{目\hspace{1em}次}
+\renewcommand{\listtablename}{表次}
+\renewcommand{\listfigurename}{圖次}
+
+% 目次只列章、節（二(七)1：「列出各章節之標題」；附件三範例只到第○節）
+\setcounter{tocdepth}{2}
+
+% ============================================================
+% 章節編號階層（附件三、四）：第一章、第一節、一、、(一)
+% twthesis 的節以下固定為阿拉伯數字 1.1，這裡整組覆寫。
+% \zhnum{counter} 可展開，寫進 .toc / .aux 時就定值，目次與 \ref 才不會變成「零」。
+% \ref 只回傳編號本身（「三」「一」），不含「第」「節」「、」與括號。
+% ============================================================
+\renewcommand{\thesubsection}{\zhnum{subsection}}
+\renewcommand{\thesubsubsection}{\zhnum{subsubsection}}
+\renewcommand{\theparagraph}{\zhnum{paragraph}}
+
+% === 授權書、口試委員簽名頁掃描檔（紙本用，\includepdf）===
+\RequirePackage{pdfpages}
+
+% === 每章另起新頁（條文未規定，慣例）===
+% 謝辭、摘要、Abstract、目次、參考文獻等以 \section* 產生，一併換頁。
+\pretocmd{\section}{\clearpage}{}{%
+  \PackageWarning{thesisprofile}{無法修補 \string\section：章不會自動換頁}}
+
+% ============================================================
+% 標題字級（附件四，皆標楷體）：章 18 號、節 16 號、「一、」14 號、內文 12 號。
+% 加粗、間距條文未規定，採慣例（標楷體以 AutoFakeBold 假粗體呈現）。
+% ============================================================
+\titleformat{\section}
+  {\centering\fontsize{18pt}{27pt}\selectfont\bfseries}
+  {第\thesection 章}{1em}{}
+\titlespacing*{\section}{0pt}{0pt}{\baselineskip}
+
+% 前置頁與參考文獻等無編號標題（\section*）：目次、表次、圖次為 16 號（附件三），
+% 誌謝、摘要、參考文獻條文未規定字級，一併用 16 號置中。
+\titleformat{name=\section,numberless}
+  {\centering\fontsize{16pt}{24pt}\selectfont\bfseries}
+  {}{0pt}{}
+\titlespacing*{name=\section,numberless}{0pt}{0pt}{\baselineskip}
+
+\titleformat{\subsection}
+  {\centering\fontsize{16pt}{24pt}\selectfont\bfseries}
+  {第\thesubsection 節}{1em}{}
+\titlespacing*{\subsection}{0pt}{\baselineskip}{0.5\baselineskip}
+
+\titleformat{\subsubsection}
+  {\fontsize{14pt}{21pt}\selectfont\bfseries}
+  {\thesubsubsection、}{0pt}{}
+\titlespacing*{\subsubsection}{0pt}{0.5\baselineskip}{0pt}
+
+\titleformat{\paragraph}
+  {\normalsize\bfseries}
+  {(\theparagraph)}{0.5em}{}
+\titlespacing*{\paragraph}{1em}{0.5\baselineskip}{0pt}
+
+% ============================================================
+% 目次條目與內文標題一致（附件三）：「第一章 ○○○…… 1」「  第一節 ○○○…… 1」，含點線
+% 未編號條目（摘要、參考文獻）不經 \numberline，仍靠左對齊。
+% ============================================================
+\renewcommand*\l@section[2]{%
+  \addpenalty{-\@highpenalty}%
+  \vskip 0.5em \@plus\p@
+  \begingroup
+  \renewcommand*\numberline[1]{\hb@xt@\@tempdima{第##1章\hfil}}%
+  \@dottedtocline{1}{0em}{5em}{#1}{#2}%
+  \endgroup}
+\renewcommand*\l@subsection[2]{%
+  \begingroup
+  \renewcommand*\numberline[1]{\hb@xt@\@tempdima{第##1節\hfil}}%
+  \@dottedtocline{2}{2em}{5em}{#1}{#2}%
+  \endgroup}
+
+\endinput

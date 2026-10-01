@@ -1,0 +1,34 @@
+name: thesis-nccu
+type: thesis
+style: nccu
+description: 國立政治大學（National Chengchi University）學位論文格式。
+# 格式來源：規範的出處與可信度，新增或修改 profile 時務必填寫。
+# status: verified = 已對照校方正式規範；derived = 依實際論文／系所範本推得，未對照校方條文
+source:
+  status: derived
+  basis: >-
+    國立政治大學學位論文格式規範（圖書館博碩士論文系統「檔案下載」，PDF 2026-07-16）；
+    紙張與邊界依政大機構典藏 69 篇碩博士論文（2022–2026、30 餘系所）實測與地政學系論文書寫格式
+  url: https://thesis.lib.nccu.edu.tw/zh-hant/help/download/
+  version: "2026-07-16"
+  note: >-
+    校級規範有條文的部分皆依條文：內文中文 12 號標楷體、英文 12 號 Times New Roman、1.5 行高、
+    頁碼置中於正下方（二(八)2）；章 18 號、節 16 號、「一、」14 號（附件四）；章節「第一章／第一節／一、」
+    與目次、表次、圖次 16 號（附件三）；圖表全文流水號「表 1」「圖 1」（附件三）；書名頁同封面、
+    中英雙語、民國年月下列英文 Month Year（附件一）；授權書與口試委員簽名頁不放電子檔（一）。
+    **紙張與內文四邊邊界校級規範未規定**（只有附件一封面標「上下留空的高度相同、左右置中 2.54cm」），
+    系所規範互相矛盾（地政 2.54/2.54/3.17/3.17、行管學程 2.5/2.5/3/2.5、韓文系 3/3/3/2 cm、
+    英文系英教組 1/1/1.5/1 in）。本 profile 採實測多數：A4（63/69 篇）、上下 2.54 cm、左右 3.17 cm
+    （即 Word 中文版預設；左邊界 ≈3.17 cm 者 40/69 篇），與地政學系規範相同。系所另有規定時從系所。
+    頁碼基線距紙底 1.75 cm（Word 中文版預設頁尾距離；實測數字底緣中位數 2.0 cm）；
+    謝辭不編頁碼、摘要起小寫羅馬、第一章起阿拉伯（校級未規定，依行管學程、韓文系等系所規範與實測多數）。
+    公式全文連續 (1)、每章換頁、標題加粗為慣例。浮水印與保全由圖書館系統加入，學生勿自行加；
+    舊版說明另稱系統會在右下角加 DOI，頁碼勿放右下。
+language: zh-TW
+template: ../../shared/latex/thesis.latex   # 共用模板；學校差異在 thesisprofile.sty
+skeleton: skeleton/
+skill: skill/SKILL.md
+defaults:
+  bib-style: ieee
+  pdf-engine: xelatex
+  csl: shared/cites/ieee.csl
