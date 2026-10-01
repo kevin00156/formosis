@@ -92,6 +92,58 @@ def iter_body(lines: list[str], fm_end: int):
         yield i, line
 
 
+_TEX_BEGIN = re.compile(r"^\s*\\begin\{([^}]+)\}")
+_TEX_CMD = re.compile(r"\\[A-Za-z]+\*?")
+
+
+def _strip_tex_inline(line: str, depth: int) -> tuple[str, int]:
+    """去掉行內 LaTeX 指令與其所有 [..]/{..} 參數;depth 是跨行未閉合的 { 層數。"""
+    out, i, n = [], 0, len(line)
+    while i < n:
+        if depth:  # 在 {..} 參數裡:只追蹤大括號,\{ \} 不算
+            c = line[i]
+            if c == "\\":
+                i += 2
+                continue
+            depth += {"{": 1, "}": -1}.get(c, 0)
+            i += 1
+            if depth:
+                continue
+        else:
+            m = _TEX_CMD.match(line, i)
+            if not m:
+                out.append(line[i])
+                i += 1
+                continue
+            i = m.end()
+        # 指令名或一個參數剛結束:緊接的 [..] 與 {..} 也是參數(\textcolor{red}{...})
+        while i < n and line[i] == "[":
+            j = line.find("]", i)
+            i = n if j < 0 else j + 1
+        if i < n and line[i] == "{":
+            depth, i = 1, i + 1
+    return "".join(out), depth
+
+
+def iter_markdown_text(lines: list[str], fm_end: int):
+    """iter_body 再去掉 Pandoc 視為 raw LaTeX 的部分(以 pandoc 3.7 實測):
+    \\begin{env}…\\end{env} 整段是 RawBlock;行內 \\cmd[..]{..} 連同參數是 RawInline。
+    這些地方的 @ 原樣輸出,不是引用(例:表格註解裡的「PLA @BBL A1」)。"""
+    env, env_depth, depth = None, 0, 0
+    for i, line in iter_body(lines, fm_end):
+        if env is None and not depth:
+            m = _TEX_BEGIN.match(line)
+            if m:
+                env, env_depth = m.group(1), 0
+        if env is not None:
+            env_depth += line.count(f"\\begin{{{env}}}") - line.count(f"\\end{{{env}}}")
+            if env_depth <= 0:
+                env = None
+            continue
+        text, depth = _strip_tex_inline(line, depth)
+        yield i, text
+
+
 # ============================================================
 # 規則
 # ============================================================
@@ -121,7 +173,7 @@ def check_citations(path: Path, fm: dict, lines: list[str], fm_end: int) -> list
         return []  # 無 bib 檔則略過(可能是不需引用的文件)
     defined = parse_bib_keys(bib)
     out, used = [], set()
-    for i, line in iter_body(lines, fm_end):
+    for i, line in iter_markdown_text(lines, fm_end):
         line = re.sub(r"`[^`]*`", "", line)  # 去掉行內 code span，避免把 `foo@bar`、`.bbl` 等當成引用
         for m in re.finditer(r"(?<![A-Za-z0-9])@([A-Za-z0-9][\w:.#$%&+?<>~/-]*)", line):
             key = m.group(1)
