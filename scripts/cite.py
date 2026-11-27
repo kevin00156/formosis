@@ -38,7 +38,7 @@ import urllib.request
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from lint import resolve_bib, split_frontmatter  # noqa: E402
+from lint import resolve_bib, split_frontmatter, strip_yaml_comment  # noqa: E402
 
 USER_AGENT = "Formosis-cite (+https://github.com/kevin00156/formosis)"
 FETCH_TIMEOUT_S = 20.0
@@ -385,10 +385,6 @@ def fetch_entry(kind: str, value: str) -> BibEntry:
 # ============================================================
 # Zotero（Better BibTeX pull export、zotero-cli）
 # ============================================================
-
-def strip_yaml_comment(v: str) -> str:
-    return re.sub(r"\s+#.*$", "", v).strip().strip('"').strip("'")
-
 
 def zotero_collection(fm: dict) -> str:
     """frontmatter 的 zotero-collection:（去掉 YAML 行尾註解）。"""

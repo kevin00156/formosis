@@ -183,9 +183,24 @@ def check_citations(path: Path, fm: dict, lines: list[str], fm_end: int) -> list
             if key not in defined:
                 out.append(err(path, i, f"引用 [@{key}] 不存在於 {bib.name}"))
     # 未被引用的 bib 條目(warn)
-    for key in sorted(defined - used):
+    unused = sorted(defined - used)
+    if unused and zotero_managed(fm):
+        # .bib 由 Zotero collection 整包匯出,本來就比引用的多:併成一行,別淹沒真正的警告
+        out.append(warn(bib, 0, f"Zotero collection 中 {len(unused)} 筆未引用"))
+        return out
+    for key in unused:
         out.append(warn(bib, 0, f"bib 條目 '{key}' 從未被引用(死引用)"))
     return out
+
+
+def strip_yaml_comment(v: str) -> str:
+    """去掉 YAML 行尾註解與引號。split_frontmatter 已 strip 過值,`key: # 註解` 會以 # 開頭。"""
+    return re.sub(r"(?:^|\s)#.*$", "", v).strip().strip('"').strip("'")
+
+
+def zotero_managed(fm: dict) -> bool:
+    """frontmatter 有非空的 zotero-collection:,.bib 由 Zotero collection 整包匯出。"""
+    return bool(strip_yaml_comment(fm.get("zotero-collection", "")))
 
 
 def check_images(path: Path, lines: list[str], fm_end: int) -> list[Finding]:

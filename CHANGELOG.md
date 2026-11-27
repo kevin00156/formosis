@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - `chapnum=zh`（thesis-ccu）的章號在內文、目錄與 `\ref` 全部顯示為「零」：`\thesection` 改用可展開的 `\zhnum{section}`。
 - `cite.py`：Crossref `month=June` 轉為 `jun` 巨集、arXiv 年份改用首次提交年、去掉 doi 欄位的網址前綴、華藝學位論文對應 `@thesis`。
+- `lint.py`：YAML 有 `zotero-collection:` 時，未引用的 `.bib` 條目併成一行「Zotero collection 中 N 筆未引用」，不再逐筆洗版（手寫 `.bib` 行為不變）。
+- `zotero-collection: # 註解` 這種只有註解的值改視為未設定（`cite.py sync` 原本會把「# 註解」當 collection 名稱）。
 - Release workflow 改用 `docker/paper.Dockerfile` 編譯範例（v0.1.0 首次發佈因缺 `lmodern` 失敗）。
 
 ## [0.1.0] - 2026-09-30
