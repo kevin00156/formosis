@@ -247,7 +247,7 @@ PDF 必須 > 100 KB 才算通過（Marp 內嵌字體較肥）。首次執行會�
 
 ### CI 結構（三支 workflow）
 
-- **`.github/workflows/lint.yml`**：每次 push/PR 都跑（30 秒）。檢查 Skill frontmatter、章節錨點、禁用破折號、Marp 簡報頁數上限。
+- **`.github/workflows/lint.yml`**：每次 push/PR 都跑（30 秒）。檢查 Skill frontmatter、章節錨點、禁用破折號、會被 Pandoc 當 HTML 吃掉的 `<…>` 佔位字、Marp 簡報頁數上限。
 - **`.github/workflows/docker-images.yml`**：在 `docker/**` 變動時 build & push CI base image 到 GHCR，打 `:latest` / `:<branch-slug>` / `:sha-<7chars>` tag。給外部 / release 用。
 - **`.github/workflows/build.yml`**：含 prepare-image + build + build-slides 共四個 job：
   - `prepare-paper-image` / `prepare-slides-image`：用 GHA cache build `docker/{paper,slides}.Dockerfile` 並推 `:ci-<run_id>` tag。Dockerfile 沒變時幾乎瞬間。

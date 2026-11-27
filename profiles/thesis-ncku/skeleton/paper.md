@@ -6,12 +6,12 @@ profile: thesis-ncku  # Formosis 編譯時自動套用此 profile（可被 CLI -
 # 封面須列：校名、系（所、學位學程）別、論文名稱、中英文題目、研究生、指導教授、
 # 年月（學位考試通過日期）。英文姓名、學院等延伸摘要用的欄位在下方 raw LaTeX 區塊。
 # ============================================================
-thesis-title-zh: "<您的論文中文題目>"
-thesis-title-en: "<Your Thesis Title in English>"
+thesis-title-zh: "<您的論文中文題目，請替換>"
+thesis-title-en: "<Your Thesis Title in English, please replace>"
 department: "<您的系（所、學位學程），例如：機械工程學系>"
 degree: "碩士論文"                  # 或 "博士論文"
-student: "<您的姓名>"
-advisor: "<指導教授姓名> 博士"
+student: "<您的姓名，請替換>"
+advisor: "<指導教授姓名，請替換> 博士"
 year: "<學位考試通過之民國年，例如：115>"
 month: "<學位考試通過之月份，例如：6>"
 
@@ -301,9 +301,9 @@ $\epsilon$ & <雜訊項> \\
 
 <請條列本論文的主要貢獻，建議 2-4 點。>
 
-1. **<貢獻一>**：<簡述貢獻內容>
-2. **<貢獻二>**：<簡述貢獻內容>
-3. **<貢獻三>**：<簡述貢獻內容>
+1. **<貢獻一，請替換>**：<簡述貢獻內容，請替換>
+2. **<貢獻二，請替換>**：<簡述貢獻內容，請替換>
+3. **<貢獻三，請替換>**：<簡述貢獻內容，請替換>
 
 ## 論文架構 {#sec:intro-structure}
 
@@ -313,11 +313,11 @@ $\epsilon$ & <雜訊項> \\
 
 # 文獻探討 {#sec:literature}
 
-## <第一個主題> {#sec:literature-topic1}
+## <第一個主題，請替換> {#sec:literature-topic1}
 
 <請在此回顧該主題的相關研究。引用文獻範例：[@vaswani2017attention; @he2016resnet]。>
 
-## <第二個主題> {#sec:literature-topic2}
+## <第二個主題，請替換> {#sec:literature-topic2}
 
 <請在此回顧另一個主題的相關研究。>
 
@@ -335,7 +335,7 @@ $\epsilon$ & <雜訊項> \\
 
 如圖 \ref{fig:system-overview} 所示，本研究的整體架構分為三個主要模組。
 
-## <方法一> {#sec:method-approach1}
+## <方法一，請替換> {#sec:method-approach1}
 
 <請說明第一個方法元件的細節。可插入公式：>
 
@@ -346,7 +346,7 @@ y = f(x; \theta) + \epsilon
 \label{eq:example-formula}
 \end{equation}
 
-## <方法二> {#sec:method-approach2}
+## <方法二，請替換> {#sec:method-approach2}
 
 <請說明第二個方法元件。>
 

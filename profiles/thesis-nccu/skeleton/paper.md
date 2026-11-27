@@ -159,7 +159,7 @@ toc: false                        # 手動插入 \tableofcontents
 
 \vspace{1cm}
 
-\noindent 關鍵詞：<關鍵詞1>、<關鍵詞2>、<關鍵詞3>
+\noindent 關鍵詞：<關鍵詞1，請替換>、<關鍵詞2，請替換>、<關鍵詞3，請替換>
 
 <!-- ============================================================ -->
 <!-- Abstract（英文摘要及 Keywords）                                -->
@@ -173,7 +173,7 @@ toc: false                        # 手動插入 \tableofcontents
 
 \vspace{1cm}
 
-\noindent Keywords: <Keyword1>, <Keyword2>, <Keyword3>
+\noindent Keywords: <Keyword1, please replace>, <Keyword2, please replace>, <Keyword3, please replace>
 
 <!-- ============================================================ -->
 <!-- 目次、表次、圖次（附件三；圖次、表次在電子檔非必備）             -->
@@ -214,9 +214,9 @@ toc: false                        # 手動插入 \tableofcontents
 
 <請條列本論文的主要貢獻，建議 2-4 點。>
 
-1. **<貢獻一>**：<簡述貢獻內容>
-2. **<貢獻二>**：<簡述貢獻內容>
-3. **<貢獻三>**：<簡述貢獻內容>
+1. **<貢獻一，請替換>**：<簡述貢獻內容，請替換>
+2. **<貢獻二，請替換>**：<簡述貢獻內容，請替換>
+3. **<貢獻三，請替換>**：<簡述貢獻內容，請替換>
 
 ## 論文架構 {#sec:intro-structure}
 
@@ -226,11 +226,11 @@ toc: false                        # 手動插入 \tableofcontents
 
 # 文獻探討 {#sec:literature}
 
-## <第一個主題> {#sec:literature-topic1}
+## <第一個主題，請替換> {#sec:literature-topic1}
 
 <請在此回顧該主題的相關研究。引用文獻範例：[@vaswani2017attention; @he2016resnet]。>
 
-## <第二個主題> {#sec:literature-topic2}
+## <第二個主題，請替換> {#sec:literature-topic2}
 
 <請在此回顧另一個主題的相關研究。>
 
@@ -259,7 +259,7 @@ toc: false                        # 手動插入 \tableofcontents
 
 系統架構見圖 \ref{fig:system-overview}，整體分為三個主要模組。
 
-## <方法一> {#sec:method-approach1}
+## <方法一，請替換> {#sec:method-approach1}
 
 <請說明第一個方法元件的細節。可插入公式：>
 
@@ -270,7 +270,7 @@ y = f(x; \theta) + \epsilon
 \label{eq:example-formula}
 \end{equation}
 
-## <方法二> {#sec:method-approach2}
+## <方法二，請替換> {#sec:method-approach2}
 
 <請說明第二個方法元件。>
 

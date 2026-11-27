@@ -5,12 +5,12 @@ profile: thesis-nchu  # Formosis 編譯時自動套用此 profile（可被 CLI -
 # === 中興大學論文基本資訊（請替換以下 placeholder） ===
 # ============================================================
 thesis-title-zh: "<您的論文中文題目（最多三行、60 字）>"
-thesis-title-en: "<Your Thesis Title in English>"
+thesis-title-en: "<Your Thesis Title in English, please replace>"
 department: "<系所全名，依本校組織規程，例如：機械工程學系>"
 degree: "碩士學位論文"              # 或 "博士學位論文"
 # 姓名後加上與護照相同的英文名（F2-65 貳一(一)4、5）
-student: "<您的中文姓名> <English Name>"
-advisor: "<指導教授中文姓名> <English Name>"
+student: "<您的中文姓名，請替換> <English Name, please replace>"
+advisor: "<指導教授中文姓名，請替換> <English Name, please replace>"
 # 論文完成日期採中式數字（F2-65 貳一(一)6）
 year: "<民國年，中式數字，例如：一百一十五>"
 month: "<月份，中式數字，例如：六>"
@@ -217,7 +217,7 @@ Student: <English Name>\par
 
 \vspace{1cm}
 
-\noindent 關鍵字：<關鍵字1>、<關鍵字2>、<關鍵字3>
+\noindent 關鍵字：<關鍵字1，請替換>、<關鍵字2，請替換>、<關鍵字3，請替換>
 
 <!-- ============================================================ -->
 <!-- Abstract（英文摘要） -->
@@ -231,7 +231,7 @@ Student: <English Name>\par
 
 \vspace{1cm}
 
-\noindent Keywords: <Keyword1>, <Keyword2>, <Keyword3>
+\noindent Keywords: <Keyword1, please replace>, <Keyword2, please replace>, <Keyword3, please replace>
 
 <!-- ============================================================ -->
 <!-- 目次、表目次、圖目次（表在前、圖在後，F2-65 貳一(十一)）        -->
@@ -273,9 +273,9 @@ Student: <English Name>\par
 
 <請條列本論文的主要貢獻，建議 2-4 點。>
 
-1. **<貢獻一>**：<簡述貢獻內容>
-2. **<貢獻二>**：<簡述貢獻內容>
-3. **<貢獻三>**：<簡述貢獻內容>
+1. **<貢獻一，請替換>**：<簡述貢獻內容，請替換>
+2. **<貢獻二，請替換>**：<簡述貢獻內容，請替換>
+3. **<貢獻三，請替換>**：<簡述貢獻內容，請替換>
 
 ## 論文架構 {#sec:intro-structure}
 
@@ -285,11 +285,11 @@ Student: <English Name>\par
 
 # 文獻探討 {#sec:literature}
 
-## <第一個主題> {#sec:literature-topic1}
+## <第一個主題，請替換> {#sec:literature-topic1}
 
 <請在此回顧該主題的相關研究。引用文獻範例：[@vaswani2017attention; @he2016resnet]。>
 
-## <第二個主題> {#sec:literature-topic2}
+## <第二個主題，請替換> {#sec:literature-topic2}
 
 <請在此回顧另一個主題的相關研究。>
 
@@ -318,7 +318,7 @@ Student: <English Name>\par
 
 系統架構見圖 \ref{fig:system-overview}，整體分為三個主要模組。
 
-## <方法一> {#sec:method-approach1}
+## <方法一，請替換> {#sec:method-approach1}
 
 <請說明第一個方法元件的細節。可插入公式：>
 
@@ -329,7 +329,7 @@ y = f(x; \theta) + \epsilon
 \label{eq:example-formula}
 \end{equation}
 
-## <方法二> {#sec:method-approach2}
+## <方法二，請替換> {#sec:method-approach2}
 
 <請說明第二個方法元件。>
 

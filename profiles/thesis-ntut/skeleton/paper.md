@@ -4,12 +4,12 @@ profile: thesis-ntut  # Formosis 編譯時自動套用此 profile（可被 CLI -
 # ============================================================
 # === 北科大論文基本資訊（請替換以下 placeholder） ===
 # ============================================================
-thesis-title-zh: "<您的論文中文題目>"
+thesis-title-zh: "<您的論文中文題目，請替換>"
 thesis-title-en: "<Your Thesis Title in English（選填，不需要就改成空字串）>"
 department: "<您的系所全名，依圖書館「學位論文系所名稱參照表」，例如：機電整合研究所>"
 degree: "碩士學位論文"              # 或 "博士學位論文"
-student: "<您的姓名>"
-advisor: "<指導教授姓名> 博士"
+student: "<您的姓名，請替換>"
+advisor: "<指導教授姓名，請替換> 博士"
 # 封面日期以中文數字書寫（零一二三四五六七八九十），為預計畢業年月
 year: "<民國年，中文數字，例如：一百一十五>"
 month: "<月份，中文數字，例如：六>"
@@ -196,7 +196,7 @@ toc: false                        # 手動插入 \tableofcontents
 
 \vspace{1cm}
 
-\noindent 關鍵詞：<關鍵詞1>、<關鍵詞2>、<關鍵詞3>
+\noindent 關鍵詞：<關鍵詞1，請替換>、<關鍵詞2，請替換>、<關鍵詞3，請替換>
 
 <!-- ============================================================ -->
 <!-- ABSTRACT（英文摘要） -->
@@ -210,7 +210,7 @@ toc: false                        # 手動插入 \tableofcontents
 
 \vspace{1cm}
 
-\noindent Keywords: <Keyword1>, <Keyword2>, <Keyword3>
+\noindent Keywords: <Keyword1, please replace>, <Keyword2, please replace>, <Keyword3, please replace>
 
 <!-- ============================================================ -->
 <!-- 誌謝 -->
@@ -265,9 +265,9 @@ toc: false                        # 手動插入 \tableofcontents
 
 <請條列本論文的主要貢獻，建議 2-4 點。>
 
-1. **<貢獻一>**：<簡述貢獻內容>
-2. **<貢獻二>**：<簡述貢獻內容>
-3. **<貢獻三>**：<簡述貢獻內容>
+1. **<貢獻一，請替換>**：<簡述貢獻內容，請替換>
+2. **<貢獻二，請替換>**：<簡述貢獻內容，請替換>
+3. **<貢獻三，請替換>**：<簡述貢獻內容，請替換>
 
 ## 論文架構 {#sec:intro-structure}
 
@@ -277,11 +277,11 @@ toc: false                        # 手動插入 \tableofcontents
 
 # 文獻探討 {#sec:literature}
 
-## <第一個主題> {#sec:literature-topic1}
+## <第一個主題，請替換> {#sec:literature-topic1}
 
 <請在此回顧該主題的相關研究。引用文獻範例：[@vaswani2017attention; @he2016resnet]。>
 
-## <第二個主題> {#sec:literature-topic2}
+## <第二個主題，請替換> {#sec:literature-topic2}
 
 <請在此回顧另一個主題的相關研究。>
 
@@ -310,7 +310,7 @@ toc: false                        # 手動插入 \tableofcontents
 
 如圖 \ref{fig:system-overview} 所示，本研究的整體架構分為三個主要模組。
 
-## <方法一> {#sec:method-approach1}
+## <方法一，請替換> {#sec:method-approach1}
 
 <請說明第一個方法元件的細節。可插入公式（逐章編號，編號靠右，J1 3.11）：>
 
@@ -321,7 +321,7 @@ y = f(x; \theta) + \epsilon ,
 \label{eq:example-formula}
 \end{equation}
 
-## <方法二> {#sec:method-approach2}
+## <方法二，請替換> {#sec:method-approach2}
 
 <請說明第二個方法元件。>
 
