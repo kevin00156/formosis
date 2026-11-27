@@ -12,7 +12,7 @@
   lint.py --strict                      警告也視為失敗
 
 嚴重度:
-  error  會破壞 PDF 或違反硬規範(缺錨點、缺字引用、缺圖、全形破折號、marp 缺 theme/超頁、SKILL 缺欄位)
+  error  會破壞 PDF 或違反硬規範(缺錨點、缺字引用、缺圖、全形破折號、會被當 HTML 吃掉的 <…>、marp 缺 theme/超頁、SKILL 缺欄位)
   warn   品質提醒,不擋編譯(未引用的 bib 條目)
 
 Exit code: 0 乾淨;1 有 error(或 --strict 下有任何 warn)。
@@ -76,18 +76,22 @@ def split_frontmatter(lines: list[str]) -> tuple[dict, int]:
 
 
 def iter_body(lines: list[str], fm_end: int):
-    """逐行產生正文 (line_no, text),跳過 YAML frontmatter / code block / HTML 註解行。"""
-    in_code = False
+    """逐行產生正文 (line_no, text),跳過 YAML frontmatter / code block / HTML 註解(含多行)。"""
+    in_code = in_comment = False
     for i, line in enumerate(lines, start=1):
         if i <= fm_end:
             continue
         stripped = line.strip()
+        if in_comment:  # 多行 <!-- … --> 註解(skeleton 常把選用附錄整段註解掉)
+            in_comment = "-->" not in line
+            continue
         if stripped.startswith("```"):
             in_code = not in_code
             continue
         if in_code:
             continue
-        if line.lstrip().startswith("<!--"):
+        if stripped.startswith("<!--"):
+            in_comment = "-->" not in line
             continue
         yield i, line
 
@@ -155,6 +159,27 @@ def check_em_dash(path: Path, lines: list[str], fm_end: int) -> list[Finding]:
             continue
         if "——" in line:
             out.append(err(path, i, "禁用全形破折號「——」"))
+    return out
+
+
+# Pandoc 認得的 HTML 標籤(以 pandoc 3.7 實測):名稱以字母開頭(中文也算字母),後接字母/數字/_/-;
+# 屬性名同樣以字母開頭,可帶 =值。命中的 <…> 會變成 RawInline html,輸出 LaTeX 時整段丟棄。
+# 中文標點(，：、。)、英文逗號、句點、括號都會讓它不成標籤,所以「<您的姓名，請替換>」能安全印出。
+_ATTR_VAL = r"""(?:\s*=\s*(?:"[^"]*"|'[^']*'|[^\s"'=<>`]+))?"""
+_HTML_TAG = re.compile(
+    r"</?[^\W\d_][\w-]*(?:[\s/]+[^\W\d_][\w:-]*" + _ATTR_VAL + r")*\s*/?>")
+_CODE_SPAN = re.compile(r"`[^`]*`")
+
+
+def check_html_placeholders(path: Path, lines: list[str], fm_end: int) -> list[Finding]:
+    out, head, depth = [], [], 0
+    for i, line in enumerate(lines[:fm_end], start=1):  # YAML 值;header-includes 的 raw LaTeX 不算
+        text, depth = _strip_tex_inline(line, depth)
+        head.append((i, text))
+    for i, line in head + list(iter_markdown_text(lines, fm_end)):
+        for m in _HTML_TAG.finditer(_CODE_SPAN.sub("", line)):
+            out.append(err(path, i, f"「{m.group()}」會被 Pandoc 當成 HTML 標籤,PDF 裡整段消失;"
+                                    "佔位字請加標點,例如「<您的姓名，請替換>」"))
     return out
 
 
@@ -255,6 +280,7 @@ def lint_md(path: Path) -> list[Finding]:
         out += check_anchors(path, lines, fm_end)
         out += check_citations(path, fm, lines, fm_end)
         out += check_images(path, lines, fm_end)
+        out += check_html_placeholders(path, lines, fm_end)
     return out
 
 
