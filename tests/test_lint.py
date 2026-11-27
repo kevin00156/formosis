@@ -55,5 +55,37 @@ class RawLatexCitationTest(unittest.TestCase):
         self.assertEqual(cited("正文\\footnote{跨行\n仍在註腳 @a}\n之後 @b"), ["b"])
 
 
+def unused_warns(fm: dict, text: str = "見 [@a]。") -> list[str]:
+    """bib 有 a、b、c 三筆，回傳 check_citations 的 warn 訊息。"""
+    with tempfile.TemporaryDirectory() as d:
+        md, bib = Path(d) / "paper.md", Path(d) / "references.bib"
+        md.write_text(text, encoding="utf-8")
+        bib.write_text("".join(f"@article{{{k},\n  title={{t}}\n}}\n" for k in "abc"),
+                       encoding="utf-8")
+        return [f.msg for f in lint.check_citations(md, fm, text.splitlines(), 0)
+                if f.severity == "warn"]
+
+
+class UnusedBibEntryTest(unittest.TestCase):
+    def test_hand_written_bib_reports_each_entry(self):
+        msgs = unused_warns({})
+        self.assertEqual(len(msgs), 2)
+        self.assertTrue(all("死引用" in m for m in msgs))
+
+    def test_zotero_collection_collapses_to_one_line(self):
+        # FMS-9：collection 整包匯出，未引用條目併成一行摘要
+        self.assertEqual(unused_warns({"zotero-collection": "我的論文"}),
+                         ["Zotero collection 中 2 筆未引用"])
+
+    def test_zotero_collection_with_trailing_comment(self):
+        self.assertEqual(len(unused_warns({"zotero-collection": '"碩論"   # 註解'})), 1)
+
+    def test_empty_zotero_collection_is_hand_written(self):
+        self.assertEqual(len(unused_warns({"zotero-collection": "# 只有註解"})), 2)
+
+    def test_zotero_collection_all_cited_no_warn(self):
+        self.assertEqual(unused_warns({"zotero-collection": "x"}, "[@a] [@b] [@c]"), [])
+
+
 if __name__ == "__main__":
     unittest.main()
