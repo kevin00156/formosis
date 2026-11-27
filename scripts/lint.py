@@ -168,16 +168,23 @@ def check_em_dash(path: Path, lines: list[str], fm_end: int) -> list[Finding]:
 _ATTR_VAL = r"""(?:\s*=\s*(?:"[^"]*"|'[^']*'|[^\s"'=<>`]+))?"""
 _HTML_TAG = re.compile(
     r"</?[^\W\d_][\w-]*(?:[\s/]+[^\W\d_][\w:-]*" + _ATTR_VAL + r")*\s*/?>")
-_CODE_SPAN = re.compile(r"`[^`]*`")
+_NOT_HTML = re.compile(r"`[^`]*`|\$\$.*?\$\$|\$[^$]*\$")  # code span 與數學式裡的 < > 原樣保留
+_YAML_COMMENT = re.compile(r"(?:^|\s)#.*")
 
 
 def check_html_placeholders(path: Path, lines: list[str], fm_end: int) -> list[Finding]:
     out, head, depth = [], [], 0
-    for i, line in enumerate(lines[:fm_end], start=1):  # YAML 值;header-includes 的 raw LaTeX 不算
-        text, depth = _strip_tex_inline(line, depth)
+    for i, line in enumerate(lines[:fm_end], start=1):  # YAML 值;註解與 header-includes 的 raw LaTeX 不算
+        text, depth = _strip_tex_inline(_YAML_COMMENT.sub("", line), depth)
         head.append((i, text))
+    in_math = False
     for i, line in head + list(iter_markdown_text(lines, fm_end)):
-        for m in _HTML_TAG.finditer(_CODE_SPAN.sub("", line)):
+        if i > fm_end and line.count("$$") % 2:  # 跨行的 $$ … $$ 區塊
+            in_math = not in_math
+            continue
+        if in_math:
+            continue
+        for m in _HTML_TAG.finditer(_NOT_HTML.sub("", line)):
             out.append(err(path, i, f"「{m.group()}」會被 Pandoc 當成 HTML 標籤,PDF 裡整段消失;"
                                     "佔位字請加標點,例如「<您的姓名，請替換>」"))
     return out
